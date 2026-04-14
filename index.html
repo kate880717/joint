@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유초이음 학교생활 적응 앱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        body { font-family: 'Outfit', sans-serif; background: #fffbeb; overscroll-behavior: none; }
+        #root { height: 100%; display: flex; flex-direction: column; }
+        .jua { font-family: 'Jua', sans-serif; }
+        .hide-sc::-webkit-scrollbar { display: none; }
+        .hide-sc { -ms-overflow-style: none; scrollbar-width: none; }
+
+        :root {
+            --fs-xs:  clamp(0.75rem, 1.8vmin, 1.3rem);
+            --fs-sm:  clamp(0.9rem,  2.2vmin, 1.55rem);
+            --fs-md:  clamp(1.05rem, 2.8vmin, 1.9rem);
+            --fs-lg:  clamp(1.2rem,  3.4vmin, 2.3rem);
+            --fs-xl:  clamp(1.4rem,  4.5vmin, 3rem);
+            --fs-2xl: clamp(1.7rem,  5.8vmin, 3.8rem);
+            --fs-3xl: clamp(2.1rem,  7.5vmin, 5rem);
+        }
+        .fs-xs  { font-size: var(--fs-xs);  }
+        .fs-sm  { font-size: var(--fs-sm);  }
+        .fs-md  { font-size: var(--fs-md);  }
+        .fs-lg  { font-size: var(--fs-lg);  }
+        .fs-xl  { font-size: var(--fs-xl);  }
+        .fs-2xl { font-size: var(--fs-2xl); }
+        .fs-3xl { font-size: var(--fs-3xl); }
+
+        .safe-h { height: 100dvh; }
+        @supports not (height: 100dvh) { .safe-h { height: 100vh; } }
+
+        @keyframes fade-up { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
+        .fade-up { animation: fade-up .3s ease-out both; }
+        @keyframes pop { from{opacity:0;transform:scale(.84)}to{opacity:1;transform:scale(1)} }
+        .pop { animation: pop .28s cubic-bezier(.34,1.56,.64,1) both; }
+        @keyframes bob { 0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)} }
+        .bob { animation: bob 2s ease-in-out infinite; }
+        @keyframes spin { to{transform:rotate(360deg)} }
+        .spin-anim { animation: spin .9s linear infinite; }
+        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+        .pulse-anim { animation: pulse 1.6s ease-in-out infinite; }
+        @keyframes blink-red { 0%,100%{background:#ef4444}50%{background:#b91c1c} }
+        .blink-red { animation: blink-red .85s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+/* ══════════════════════════════════════════════
+   ★ 배포 후 여기에 Apps Script URL을 입력하세요 ★
+   예: 'https://script.google.com/macros/s/AKfycb.../exec'
+   비워두면 샘플 데이터로 실행됩니다.
+══════════════════════════════════════════════ */
+const GAS_URL = '';
+
+
+/* ── API 헬퍼 (fetch 기반) ── */
+const api = {
+    /* GET: 앱 데이터 전체 불러오기 */
+    async getData() {
+        if (!GAS_URL) return null;
+        try {
+            const res = await fetch(GAS_URL, { redirect: 'follow' });
+            return await res.json();
+        } catch(e) { console.error('getData 오류:', e); return null; }
+    },
+    /* POST: 액션 전송 */
+    async post(payload) {
+        if (!GAS_URL) return { success: true, mock: true };
+        try {
+            const res = await fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' }, // simple request → CORS preflight 없음
+                body: JSON.stringify(payload),
+                redirect: 'follow'
+            });
+            return await res.json();
+        } catch(e) { console.error('post 오류:', e); return { success: false, error: e.toString() }; }
+    }
+};
+
+/* ── 샘플 데이터 ── */
+const MOCK = {
+    Students: [{학번:'10101',이름:'새싹이'},{학번:'10102',이름:'김철수'}],
+    Education: [
+        {제목:'우유팩 혼자 열기 연습', 내용:'학교 급식시간에 우유를 스스로 열 수 있도록 집에서 미리 연습시켜주세요!'},
+        {제목:'스스로 일어나는 습관', 내용:'아침에 알람을 맞추고 스스로 일어나는 연습을 시작하세요.'},
+    ],
+    Checklist: [
+        {항목:'등굣길 안전하게 걷기 연습',   카테고리:'입학전'},
+        {항목:'아침에 스스로 일어났나요?',    카테고리:'데일리'},
+        {항목:'알림장을 스스로 확인했나요?',  카테고리:'데일리'},
+        {항목:'화장실 다녀와서 손 씻었나요?', 카테고리:'데일리'},
+        {항목:'내 자리를 정돈했나요?',        카테고리:'데일리'},
+        {항목:'선생님께 웃으며 인사했나요?',  카테고리:'데일리'},
+    ],
+    Transition: [
+        {질문:'준비물을 혼자 챙기게 도와주고 싶은데 어떻게 할까요?', 답변:'첫 달은 부모님이 함께 챙기고, 이후엔 아이가 먼저 챙기게 한 뒤 최종 검토만 해주세요.', 카테고리:'자립'},
+    ],
+    ChecklistStats: [],
+    Records: []
+};
+
+/* ── Error Boundary ── */
+class ErrBound extends React.Component {
+    constructor(p){super(p);this.state={err:null};}
+    static getDerivedStateFromError(e){return{err:e};}
+    render(){
+        if(this.state.err) return(
+            <div className="p-8 bg-red-50 safe-h">
+                <h1 className="text-xl font-bold text-red-600 mb-3">오류가 발생했어요</h1>
+                <pre className="text-xs text-red-800 bg-white p-4 rounded-xl whitespace-pre-wrap">{this.state.err.toString()}</pre>
+            </div>
+        );
+        return this.props.children;
+    }
+}
+
+/* ── Fairy ── */
+const Fairy = ({mood='happy', cls=''}) => (
+    <div className={"inline-block bob "+cls}>
+        <svg width="80" height="96" viewBox="0 0 120 150" fill="none">
+            <path d="M45 60C40 30 30 10 45 10C55 10 55 40 50 60" fill="#FAF089" stroke="#B7791F" strokeWidth="2"/>
+            <path d="M75 60C80 30 90 10 75 10C65 10 65 40 70 60" fill="#FAF089" stroke="#B7791F" strokeWidth="2"/>
+            <ellipse cx="60" cy="80" rx="35" ry="30" fill="#FFFFF0" stroke="#B7791F" strokeWidth="2"/>
+            <circle cx="50" cy="75" r="3" fill="#2D3748"/>
+            <circle cx="70" cy="75" r="3" fill="#2D3748"/>
+            {mood==='happy'
+                ? <path d="M53 90C56 94 64 94 67 90" stroke="#B7791F" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                : <path d="M53 94C56 90 64 90 67 94" stroke="#B7791F" strokeWidth="2.5" strokeLinecap="round" fill="none"/>}
+            <circle cx="45" cy="84" r="4" fill="#F687B3" opacity=".55"/>
+            <circle cx="75" cy="84" r="4" fill="#F687B3" opacity=".55"/>
+            <path d="M40 105C30 130 90 130 80 105" fill="#9AE6B4" stroke="#2F855A" strokeWidth="2"/>
+        </svg>
+    </div>
+);
+
+/* ── Spinner ── */
+const Spinner = ({text}) => (
+    <div className="safe-h flex flex-col items-center justify-center bg-amber-50">
+        <svg className="spin-anim text-amber-400 mb-4" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
+        <p className="text-amber-800 font-bold jua fs-xl pulse-anim">{text}</p>
+    </div>
+);
+
+/* ── Accordion ── */
+const Acc = ({title, children}) => {
+    const [open,setOpen] = useState(false);
+    return (
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex-shrink-0">
+            <button onClick={()=>setOpen(!open)} className="w-full px-4 py-3 flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition-colors text-left">
+                <span className="jua font-bold text-slate-700 fs-sm">{title}</span>
+                <span className="text-slate-400 ml-2">{open?'▲':'▽'}</span>
+            </button>
+            {open && (
+                <div className="p-4 border-t border-slate-100 fade-up max-h-64 overflow-y-auto hide-sc">
+                    {children}
+                </div>
+            )}
+        </div>
+    );
+};
+
+/* ── Mission Popup ── */
+const MissionPopup = ({missions, onComplete}) => {
+    const [idx,   setIdx]  = useState(0);
+    const [res,   setRes]  = useState({});
+    const [flash, setFlash]= useState(null);
+
+    const answer = (ans) => {
+        const nr = {...res, [idx]: ans};
+        setRes(nr);
+        setFlash(ans);
+        setTimeout(()=>{
+            setFlash(null);
+            if(idx < missions.length-1) setIdx(idx+1);
+            else onComplete(nr);
+        }, 700);
+    };
+
+    return (
+        <div className="safe-h flex flex-col items-center justify-center bg-amber-50 p-6 text-center">
+            <div className="w-full mb-5" style={{maxWidth:'640px'}}>
+                <div className="flex justify-between fs-sm font-bold text-amber-600 mb-2">
+                    <span className="jua">오늘의 활동 체크</span>
+                    <span>{idx+1} / {missions.length}</span>
+                </div>
+                <div className="w-full h-3 bg-amber-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-amber-400 rounded-full transition-all duration-500"
+                        style={{width:`${(idx/missions.length)*100}%`}}/>
+                </div>
+            </div>
+            <div key={idx} className="pop bg-white rounded-3xl shadow-2xl p-8 w-full flex flex-col items-center gap-6" style={{maxWidth:'640px'}}>
+                <p className="fs-2xl font-bold text-slate-800 jua leading-relaxed break-keep">{missions[idx].항목}</p>
+                {flash===null ? (
+                    <div className="flex gap-5 w-full">
+                        <button onClick={()=>answer('good')} className="flex-1 py-8 text-6xl bg-green-50 hover:bg-green-100 border-2 border-green-200 rounded-3xl transition-all active:scale-90">😃</button>
+                        <button onClick={()=>answer('bad')}  className="flex-1 py-8 text-6xl bg-red-50 hover:bg-red-100 border-2 border-red-200 rounded-3xl transition-all active:scale-90">☹️</button>
+                    </div>
+                ) : (
+                    <div className="text-9xl pop py-4">{flash==='good'?'😃':'☹️'}</div>
+                )}
+            </div>
+            <Fairy mood="happy" cls="mt-5 opacity-60"/>
+        </div>
+    );
+};
+
+/* ── Quiz Popup ── */
+const QuizPopup = ({onComplete}) => {
+    const qs = [
+        {q:"복도에서는 조용히 걸어 다녀야 합니다.",               a:"O"},
+        {q:"급식 반찬을 선생님 몰래 버려도 됩니다.",               a:"X"},
+        {q:"화장실 가고 싶으면 손들고 선생님께 말씀드려야 합니다.", a:"O"},
+        {q:"친구가 양보하면 '고마워'라고 말합니다.",               a:"O"},
+        {q:"학교 가방은 스스로 챙겨야 합니다.",                   a:"O"},
+        {q:"쉬는 시간에 복도에서 공을 차도 됩니다.",               a:"X"},
+        {q:"비 오는 날 우산은 아무 데나 펼쳐 두어도 됩니다.",       a:"X"},
+    ];
+    const [quiz] = useState(()=>qs[Math.floor(Math.random()*qs.length)]);
+    const [res,   setRes] = useState(null);
+
+    const ans = (a) => {
+        setRes(a===quiz.a?'ok':'no');
+        setTimeout(()=>onComplete(), 1700);
+    };
+
+    return (
+        <div className="safe-h flex flex-col items-center justify-center bg-indigo-50 p-6 text-center">
+            <div className="pop bg-white rounded-3xl shadow-2xl p-8 w-full flex flex-col items-center gap-6" style={{maxWidth:'640px'}}>
+                <span className="text-4xl">⭐</span>
+                <h2 className="fs-2xl font-bold text-indigo-900 jua">오늘의 미니 퀴즈</h2>
+                <p className="fs-xl font-bold text-slate-700 leading-relaxed break-keep bg-indigo-50 p-4 rounded-2xl w-full">{quiz.q}</p>
+                {res===null ? (
+                    <div className="flex gap-6 w-full">
+                        <button onClick={()=>ans('O')} className="flex-1 py-8 fs-3xl font-bold text-indigo-600 bg-indigo-50 border-2 border-indigo-200 rounded-3xl active:scale-90 transition-all">O</button>
+                        <button onClick={()=>ans('X')} className="flex-1 py-8 fs-3xl font-bold text-rose-500 bg-rose-50 border-2 border-rose-200 rounded-3xl active:scale-90 transition-all">X</button>
+                    </div>
+                ) : (
+                    <div className={"w-full py-5 fs-lg font-bold rounded-2xl pop "+(res==='ok'?'bg-green-100 text-green-800':'bg-orange-100 text-orange-800')}>
+                        {res==='ok'?'🎉 정답! 참 잘했어요!':'🤔 아쉬워요! 다음엔 맞춰봐요!'}
+                    </div>
+                )}
+            </div>
+            <Fairy mood={res==='no'?'sad':'happy'} cls="mt-5 opacity-60"/>
+        </div>
+    );
+};
+
+/* ── Recording Screen ── */
+const RecordingScreen = ({onDone, onSkip, providedStream}) => {
+    const [state,    setState]    = useState('idle');
+    const [audioUrl, setAudioUrl] = useState(null);
+    const mr     = useRef(null);
+    const chunks = useRef([]);
+    const b64    = useRef(null);
+
+    const examples = [
+        "나는 학교 가기 전에 스스로 가방을 챙길 거에요!",
+        "나는 선생님을 만나면 공손하게 인사할 거에요!",
+        "나는 친구들에게 먼저 웃으며 인사할 거에요!",
+        "나는 급식을 골고루 남기지 않고 먹을 거에요!",
+        "나는 복도에서 조용히 걸어 다닐 거에요!",
+    ];
+
+    const start = async () => {
+        try {
+            const stream = providedStream || await navigator.mediaDevices.getUserMedia({audio:true});
+            mr.current = new MediaRecorder(stream);
+            chunks.current = [];
+            mr.current.ondataavailable = e => { if(e.data.size>0) chunks.current.push(e.data); };
+            mr.current.onstop = () => {
+                const blob = new Blob(chunks.current, {type:'audio/webm'});
+                setAudioUrl(URL.createObjectURL(blob));
+                const rd = new FileReader();
+                rd.readAsDataURL(blob);
+                rd.onloadend = () => { b64.current = rd.result; };
+            };
+            mr.current.start();
+            setState('rec');
+        } catch(e) { alert("마이크를 사용할 수 없습니다."); }
+    };
+
+    const stop = () => {
+        if(mr.current && mr.current.state==='recording'){
+            mr.current.stop();
+            if(!providedStream) mr.current.stream.getTracks().forEach(t=>t.stop());
+        }
+        setState('done');
+    };
+
+    return (
+        <div className="safe-h flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100 p-6 text-center">
+            <div className="pop w-full flex flex-col items-center gap-4" style={{maxWidth:'640px'}}>
+                <Fairy mood="happy" cls="scale-110"/>
+                <h2 className="fs-2xl font-bold text-amber-900 jua">다짐 녹음하기! 🎙️</h2>
+                <div className="w-full bg-white/80 rounded-2xl p-4 flex flex-col gap-3 text-left">
+                    <p className="fs-md font-bold text-amber-700 mb-1">💬 예시 다짐 문장</p>
+                    {examples.map((ex,i) => (
+                        <p key={i} className="fs-md text-slate-600 leading-relaxed pl-3 border-l-4 border-amber-300">{ex}</p>
+                    ))}
+                </div>
+                {audioUrl && <audio src={audioUrl} controls className="w-full rounded-xl"/>}
+                {state==='idle' && (
+                    <div className="flex gap-3 w-full">
+                        <button onClick={start} className="flex-1 py-5 bg-red-500 text-white fs-xl font-bold jua rounded-2xl shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                            🎤 녹음 시작
+                        </button>
+                        <button onClick={()=>onSkip()} className="py-5 px-5 bg-white/80 text-slate-500 font-bold rounded-2xl shadow active:scale-95 transition-transform fs-md">
+                            건너뛰기
+                        </button>
+                    </div>
+                )}
+                {state==='rec' && (
+                    <button onClick={stop} className="w-full py-5 text-white fs-xl font-bold jua rounded-2xl shadow-xl flex items-center justify-center gap-2 blink-red">
+                        ⏹ 녹음 완료
+                    </button>
+                )}
+                {state==='done' && (
+                    <div className="flex gap-3 w-full">
+                        <button onClick={start} className="flex-1 py-5 bg-white/80 text-slate-600 font-bold rounded-2xl shadow active:scale-95 transition-transform fs-md">다시 녹음</button>
+                        <button onClick={()=>onDone(b64.current)} className="flex-1 py-5 bg-amber-500 text-white fs-xl font-bold jua rounded-2xl shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                            💾 제출하기
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+/* ── Checklist Popup ── */
+const ChecklistPopup = ({questions, studentNumber, onComplete}) => {
+    const [idx,    setIdx]    = useState(0);
+    const [saving, setSaving] = useState(false);
+
+    const ans = async () => {
+        if(idx < questions.length-1){ setIdx(idx+1); return; }
+        setSaving(true);
+        await api.post({ action: 'markChecklistComplete', studentNumber });
+        setSaving(false);
+        onComplete();
+    };
+
+    return (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white w-full rounded-3xl overflow-hidden shadow-2xl pop" style={{maxWidth:'420px'}}>
+                <div className="bg-pink-100 p-6 text-center">
+                    <span className="inline-block bg-pink-200 text-pink-700 fs-xs font-bold px-3 py-1 rounded-full mb-3">
+                        입학 전 체크리스트 {idx+1}/{questions.length}
+                    </span>
+                    <h2 className="fs-2xl font-bold text-pink-900 jua">{questions[idx].항목}</h2>
+                </div>
+                <div className="p-6 flex flex-col gap-3">
+                    <button disabled={saving} onClick={ans} className={"w-full py-4 fs-lg bg-pink-500 text-white rounded-2xl font-bold shadow-md hover:bg-pink-600 active:scale-95 transition-transform "+(saving?'opacity-50':'')}>
+                        {saving?'저장 중...':'네 정돈했어요!'}
+                    </button>
+                    <button disabled={saving} onClick={ans} className={"w-full py-4 fs-lg bg-slate-100 text-slate-700 rounded-2xl font-bold shadow hover:bg-slate-200 active:scale-95 transition-transform "+(saving?'opacity-50':'')}>
+                        더 노력할게요
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+/* ══════════════════════════════
+   MAIN APP
+══════════════════════════════ */
+function App() {
+    const [loading,        setLoading]        = useState(true);
+    const [appData,        setAppData]        = useState(null);
+    const [user,           setUser]           = useState(null);
+    const [tab,            setTab]            = useState('student');
+
+    const [missions,       setMissions]       = useState([]);
+    const [missionsResult, setMissionsResult] = useState(null);
+    const [quizDone,       setQuizDone]       = useState(false);
+    const [showMission,    setShowMission]    = useState(false);
+    const [showQuiz,       setShowQuiz]       = useState(false);
+    const [showRec,        setShowRec]        = useState(false);
+    const [studentSaved,   setStudentSaved]   = useState(false);
+
+    const [parentSup,  setParentSup]  = useState('');
+    const [parentNote, setParentNote] = useState('');
+    const [isSaving,   setIsSaving]   = useState(false);
+
+    const [showChecklist, setShowChecklist] = useState(false);
+    const [micOk,         setMicOk]         = useState(false);
+    const [micStream,     setMicStream]     = useState(null);
+    const [tips,          setTips]          = useState([]);
+    const [done,          setDone]          = useState(false);
+
+    const pickMissions = (data) => {
+        const all = (data.Checklist||[]).filter(c=>c.카테고리==='데일리');
+        setMissions([...all].sort(()=>0.5-Math.random()).slice(0,3));
+    };
+
+    /* 데이터 로드 */
+    useEffect(()=>{
+        const load = async () => {
+            let data = null;
+            if(GAS_URL) {
+                data = await api.getData();
+            }
+            if(!data) {
+                // GAS_URL 없거나 실패 시 샘플 데이터
+                await new Promise(r=>setTimeout(r,600));
+                data = MOCK;
+            }
+            setAppData(data);
+            if(data.Education && data.Education.length){
+                const s=[...data.Education].sort(()=>0.5-Math.random());
+                setTips(s.slice(0,1));
+            }
+            pickMissions(data);
+            setLoading(false);
+        };
+        load();
+    }, []);
+
+    const requestMic = async () => {
+        try {
+            const s = await navigator.mediaDevices.getUserMedia({audio:true});
+            setMicStream(s); setMicOk(true);
+        } catch(e) { alert('마이크 권한이 필요해요!'); setMicOk(true); }
+    };
+
+    const selectUser = (u) => {
+        setUser(u);
+        const ok = (appData.ChecklistStats||[]).find(s=>String(s.학번)===String(u.학번)&&s.완료여부==='완료');
+        if(!ok) setShowChecklist(true);
+    };
+
+    /* 기록 저장 (fetch POST) */
+    const saveRecord = async (audioString, parentData) => {
+        if(!user) return;
+        setIsSaving(true);
+
+        const mLine = missionsResult
+            ? missions.map((m,i)=>`${m.항목}: ${missionsResult[i]==='good'?'😃':'☹️'}`).join('\n')
+            : '(아이 활동 미완료)';
+        const content = `[아이 기록]\n${mLine}\n\n[학부모 기록]\n진행 상태: ${(parentData&&parentData.sup)||'미선택'}\n내용: ${(parentData&&parentData.note)||''}`;
+        const record = { studentNumber:user.학번, studentName:user.이름, type:'누가기록 통합', content, reflection:'' };
+
+        if(GAS_URL) {
+            // 1) 오디오 업로드
+            if(audioString) {
+                const ar = await api.post({ action:'uploadAudioToDrive', base64Data:audioString, filename:`${user.학번}_${user.이름}_다짐.webm` });
+                if(ar && ar.success) record.content += `\n\n[오디오]: ${ar.fileUrl}`;
+            }
+            // 2) 기록 저장
+            await api.post({ action:'saveCumulativeRecord', record });
+        } else {
+            console.log('Mock save (GAS_URL 없음):', record);
+            await new Promise(r=>setTimeout(r,600));
+        }
+
+        setIsSaving(false);
+        setDone(true);
+    };
+
+    const resetAll = () => {
+        setDone(false); setUser(null); setMissionsResult(null); setQuizDone(false);
+        setShowMission(false); setShowQuiz(false); setShowRec(false); setStudentSaved(false);
+        setParentSup(''); setParentNote(''); setTab('student');
+    };
+
+    /* ═══ SCREENS ═══ */
+    if(loading)  return <Spinner text="데이터 불러오는 중..."/>;
+    if(isSaving) return <Spinner text="기록 저장 중..."/>;
+
+    if(!micOk) return (
+        <div className="safe-h flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-blue-50 to-blue-100">
+            <Fairy mood="happy" cls="mb-4 scale-125"/>
+            <h1 className="fs-2xl font-bold text-blue-900 jua mb-3">마이크 준비하기</h1>
+            <p className="fs-lg font-bold text-blue-700 mb-5 leading-relaxed">내 목소리로 다짐을 남기기 위해<br/>마이크 기능이 필요해요!</p>
+            <div className="w-full" style={{maxWidth:'480px'}}>
+                <button onClick={requestMic} className="w-full py-5 fs-xl bg-blue-500 text-white rounded-2xl font-bold jua shadow-xl hover:bg-blue-600 active:scale-95 transition-transform flex items-center justify-center gap-2 mb-3">
+                    🎤 마이크 허용하고 시작하기
+                </button>
+                <button onClick={()=>setMicOk(true)} className="w-full py-3 fs-md bg-white/70 text-slate-500 rounded-2xl font-bold hover:bg-white active:scale-95 border border-slate-200 transition-transform">
+                    마이크 없이 계속하기
+                </button>
+            </div>
+            <p className="fs-xs text-slate-400 mt-4 break-keep">마이크 없어도 체크리스트·퀴즈는 이용할 수 있어요!</p>
+        </div>
+    );
+
+    if(!user) return (
+        <div className="safe-h flex flex-col items-center justify-center p-6 bg-gradient-to-b from-amber-50 to-amber-100">
+            <Fairy mood="happy" cls="mb-4 scale-125"/>
+            <h1 className="fs-2xl font-bold text-amber-800 jua mb-6 border-b-4 border-amber-300 pb-2">유초이음 성장 기록장</h1>
+            {!GAS_URL && (
+                <div className="mb-4 bg-orange-50 border border-orange-200 rounded-2xl px-5 py-3 fs-sm text-orange-700 font-bold text-center" style={{maxWidth:'480px'}}>
+                    ⚠️ 샘플 모드 — GAS_URL을 설정하면 실제 데이터가 연결됩니다
+                </div>
+            )}
+            <div className="w-full bg-white/80 backdrop-blur-sm p-6 rounded-3xl shadow-xl" style={{maxWidth:'480px'}}>
+                <p className="text-center fs-lg text-slate-500 font-bold mb-4">누가 접속했나요?</p>
+                <select className="w-full p-4 rounded-xl border-2 border-amber-200 bg-amber-50 font-bold text-slate-700 fs-lg outline-none focus:border-amber-400"
+                    onChange={e=>{
+                        const f=appData.Students.find(s=>String(s.학번)===String(e.target.value));
+                        if(f) selectUser(f);
+                    }}>
+                    <option value="">학생을 선택하세요</option>
+                    {appData.Students.map(s=>(
+                        <option key={s.학번} value={s.학번}>{s.학번} - {s.이름}</option>
+                    ))}
+                </select>
+            </div>
+        </div>
+    );
+
+    const preEnroll = appData.Checklist.filter(c=>c.카테고리==='입학전');
+    if(showChecklist && preEnroll.length>0) return (
+        <ChecklistPopup questions={preEnroll} studentNumber={user.학번} onComplete={()=>{
+            setAppData({...appData, ChecklistStats:[...(appData.ChecklistStats||[]),{학번:user.학번,완료여부:'완료'}]});
+            setShowChecklist(false);
+        }}/>
+    );
+
+    if(showMission) return <MissionPopup missions={missions} onComplete={r=>{ setMissionsResult(r); setShowMission(false); setShowQuiz(true); }}/>;
+    if(showQuiz)    return <QuizPopup onComplete={()=>{ setShowQuiz(false); setQuizDone(true); setShowRec(true); }}/>;
+    if(showRec)     return <RecordingScreen providedStream={micStream} onDone={()=>{ setShowRec(false); setStudentSaved(true); }} onSkip={()=>{ setShowRec(false); setStudentSaved(true); }}/>;
+
+    if(done) return (
+        <div className="safe-h flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-green-50 to-green-100">
+            <Fairy mood="happy" cls="mb-3 scale-150"/>
+            <div className="text-6xl mb-3 bob">🏅</div>
+            <h1 className="fs-3xl font-bold text-green-900 jua mb-3">오늘의 기록 완성!</h1>
+            <div className="bg-white/70 p-6 rounded-3xl shadow-sm mb-5 w-full" style={{maxWidth:'480px'}}>
+                <p className="font-bold text-green-700 fs-lg mb-3">
+                    <span className="text-green-500 fs-2xl jua">{user.이름}</span> 어린이, 참 잘했어요!<br/>
+                    <span className="fs-md text-green-600 block mt-1">멋진 초등학생이 될 준비가 되었네요. 🌱</span>
+                </p>
+                {missionsResult && (
+                    <div className="space-y-2">
+                        {missions.map((m,i)=>(
+                            <div key={i} className="flex items-center justify-between bg-green-50 rounded-xl px-4 py-2">
+                                <span className="fs-sm font-bold text-slate-600 text-left">{m.항목}</span>
+                                <span className="text-2xl">{missionsResult[i]==='good'?'😃':'☹️'}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <button onClick={resetAll} className="py-4 px-10 fs-lg bg-green-500 text-white rounded-2xl font-bold jua shadow-xl hover:bg-green-600 active:scale-95 transition-transform">
+                처음 화면으로
+            </button>
+        </div>
+    );
+
+    /* ═══ 메인 인터페이스 ═══ */
+    const studentDone = missionsResult!==null && quizDone && studentSaved;
+
+    return (
+        <div className="safe-h flex flex-col w-full bg-slate-50 overflow-hidden">
+
+            <header className="bg-white px-4 py-2 flex items-center justify-between shadow-sm flex-shrink-0">
+                <div className="flex items-center gap-1">
+                    <Fairy cls="scale-[0.48] -ml-4 -my-6 shrink-0"/>
+                    <h1 className="fs-lg font-bold text-amber-800 jua -ml-1">유초이음 성장 기록장</h1>
+                </div>
+                <div className="fs-sm bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
+                    {user.이름}
+                </div>
+            </header>
+
+            <div className="flex px-3 pt-2 pb-2 gap-2 bg-slate-50 flex-shrink-0">
+                <button onClick={()=>setTab('student')} className={"flex-1 py-3 rounded-xl jua fs-md transition-colors shadow-sm flex items-center justify-center gap-2 "+(tab==='student'?'bg-amber-400 text-amber-900 border-b-4 border-amber-600':'bg-white text-slate-400 border-b-4 border-transparent')}>
+                    😊 아이 활동
+                </button>
+                <button onClick={()=>setTab('parent')} className={"flex-1 py-3 rounded-xl jua fs-md transition-colors shadow-sm flex items-center justify-center gap-2 "+(tab==='parent'?'bg-blue-400 text-blue-900 border-b-4 border-blue-600':'bg-white text-slate-400 border-b-4 border-transparent')}>
+                    👨‍👩‍👧 학부모님
+                </button>
+            </div>
+
+            <div className="flex-1 min-h-0 overflow-hidden px-3 pb-3">
+
+                {tab==='student' && (
+                    <div className="h-full flex flex-col items-center justify-center fade-up">
+                        {!studentDone ? (
+                            <div className="bg-white rounded-3xl shadow-md p-7 w-full flex flex-col items-center gap-5 text-center" style={{maxWidth:'640px'}}>
+                                <Fairy mood="happy" cls="scale-125"/>
+                                <h2 className="fs-2xl font-bold text-amber-800 jua">오늘의 활동 체크</h2>
+                                <button onClick={()=>setShowMission(true)} className="w-full py-5 bg-amber-400 text-amber-900 fs-xl font-bold jua rounded-2xl shadow-lg hover:bg-amber-500 active:scale-95 transition-transform">
+                                    🌟 체크 시작!
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="h-full w-full flex flex-col gap-4 fade-up">
+                                <div className="flex items-center justify-center gap-3 flex-shrink-0">
+                                    <div className="text-5xl">✅</div>
+                                    <h2 className="fs-2xl font-bold text-green-800 jua">오늘 활동 완료!</h2>
+                                </div>
+                                <div className="flex-1 flex flex-col gap-3 min-h-0">
+                                    {missions.map((m,i)=>(
+                                        <div key={i} className="flex-1 flex items-center justify-between bg-white rounded-2xl shadow-sm px-5 py-3 border-l-4 border-green-300">
+                                            <span className="font-bold text-slate-700 fs-lg text-left">{m.항목}</span>
+                                            <span className="text-4xl ml-4">{missionsResult[i]==='good'?'😃':'☹️'}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="w-full bg-blue-100 rounded-2xl p-4 border border-blue-200 flex-shrink-0 text-center">
+                                    <p className="text-blue-800 font-bold fs-lg break-keep">
+                                        👨‍👩‍👧 학부모님 탭에서 소감을 남기고<br/><strong>제출하기</strong>를 눌러주세요!
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {tab==='parent' && (
+                    <div className="h-full fade-up overflow-y-auto hide-sc flex flex-col gap-3">
+
+                        <a href="https://i-nuri.go.kr/parents/index.do" target="_blank" rel="noopener noreferrer"
+                            className="flex items-center justify-between px-5 py-4 rounded-2xl shadow-md active:scale-95 transition-transform flex-shrink-0"
+                            style={{background:'linear-gradient(135deg,#10b981,#059669)',color:'white'}}>
+                            <div className="flex flex-col gap-0.5">
+                                <span className="fs-xs font-bold bg-white/25 px-2 py-0.5 rounded-full w-fit">유초이음 공식 사이트</span>
+                                <span className="fs-lg jua font-bold">아이누리 바로가기 →</span>
+                            </div>
+                            <span className="text-4xl bob">🌱</span>
+                        </a>
+
+                        <div className="bg-white rounded-2xl shadow-sm border-t-4 border-blue-400 p-4 flex flex-col gap-3">
+                            <h2 className="jua font-bold text-blue-900 fs-lg leading-snug">
+                                아이가 학교생활에 잘 적응하도록 어떻게 돕고 계신가요?
+                            </h2>
+                            <div className="flex gap-2">
+                                <button onClick={()=>setParentSup('잘 돕고 있음')}
+                                    className={"flex-1 py-4 font-bold rounded-xl fs-md transition-all "+(parentSup==='잘 돕고 있음'?'bg-blue-500 text-white shadow':'bg-slate-100 text-slate-600')}>
+                                    잘 돕고 있어요
+                                </button>
+                                <button onClick={()=>setParentSup('더 노력할 예정')}
+                                    className={"flex-1 py-4 font-bold rounded-xl fs-md transition-all "+(parentSup==='더 노력할 예정'?'bg-orange-400 text-white shadow':'bg-slate-100 text-slate-600')}>
+                                    도움이 필요해요
+                                </button>
+                            </div>
+                            <textarea value={parentNote} onChange={e=>setParentNote(e.target.value)}
+                                className="p-3 fs-md rounded-xl border-2 border-slate-100 bg-slate-50 outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none"
+                                rows="3"
+                                placeholder="가정에서 느낀 점을 자유롭게 적어주세요."/>
+                            <button disabled={isSaving} onClick={()=>saveRecord(null,{sup:parentSup,note:parentNote})}
+                                className={"py-4 fs-lg text-white rounded-xl font-bold jua shadow-md transition-transform flex items-center justify-center gap-2 "+(isSaving?'bg-slate-400':'bg-blue-600 hover:bg-blue-700 active:scale-95')}>
+                                💾 제출하기
+                            </button>
+                        </div>
+
+                        <Acc title="🏫 초등학교 생활 꿀팁 (30선)">
+                            <div className="space-y-3">
+                                {appData.Transition.map((q,i)=>(
+                                    <div key={i} className="flex flex-col gap-2">
+                                        <div className="flex gap-2 items-start bg-indigo-50 p-3 rounded-xl border border-indigo-100">
+                                            <span className="text-indigo-500 jua fs-md shrink-0">Q.</span>
+                                            <span className="font-bold text-indigo-900 fs-sm pt-0.5">{q.질문}</span>
+                                        </div>
+                                        {q.답변 && (
+                                            <div className="flex gap-2 items-start bg-white p-3 rounded-xl border border-slate-100 ml-3">
+                                                <span className="text-amber-500 jua fs-md shrink-0">A.</span>
+                                                <span className="text-slate-700 fs-sm leading-relaxed pt-0.5">{q.답변}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </Acc>
+
+                        <Acc title="💡 오늘의 가정 연계 교육 팁">
+                            {tips.map((t,i)=>(
+                                <div key={i} className="border-l-4 border-blue-400 pl-4 py-1">
+                                    <h4 className="font-bold text-blue-900 mb-1 jua fs-md">{t.제목}</h4>
+                                    <p className="fs-sm text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg">{t.내용}</p>
+                                </div>
+                            ))}
+                        </Acc>
+
+                    </div>
+                )}
+
+            </div>
+        </div>
+    );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<ErrBound><App/></ErrBound>);
+</script>
+</body>
+</html>
