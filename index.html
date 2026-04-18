@@ -33,22 +33,52 @@
         }
 
         #root {
-            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 800px;
+            max-height: 100dvh;
+            aspect-ratio: 3 / 4;
+            background: white;
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+            border-radius: 20px;
+        }
+        @media (max-width: 800px) {
+            #root {
+                max-width: 100vw;
+                max-height: 100dvh;
+                aspect-ratio: auto;
+                border-radius: 0;
+            }
         }
 
         .jua {
             font-family: 'Jua', sans-serif;
         }
 
-        .hide-sc::-webkit-scrollbar {
-            display: none;
+        .custom-sc::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
 
-        .hide-sc {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        .custom-sc::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 10px;
+        }
+
+        .custom-sc::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .custom-sc {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 rgba(0, 0, 0, 0.02);
         }
 
         :root {
@@ -185,9 +215,6 @@
             }
         }
 
-        .blink-red {
-            animation: blink-red .85s ease-in-out infinite;
-        }
     </style>
 </head>
 
@@ -309,7 +336,7 @@
                         <span className="text-slate-400 ml-2">{open ? '▲' : '▽'}</span>
                     </button>
                     {open && (
-                        <div className="p-4 border-t border-slate-100 fade-up max-h-64 overflow-y-auto hide-sc">
+                        <div className="p-4 border-t border-slate-100 fade-up">
                             {children}
                         </div>
                     )}
@@ -335,7 +362,7 @@
             };
 
             return (
-                <div className="safe-h flex flex-col items-center justify-center bg-amber-50 p-6 text-center">
+                <div className="h-full flex flex-col items-center justify-center bg-amber-50 p-6 text-center">
                     <div className="w-full mb-5" style={{ maxWidth: '640px' }}>
                         <div className="flex justify-between fs-sm font-bold text-amber-600 mb-2">
                             <span className="jua">오늘의 활동 체크</span>
@@ -388,7 +415,7 @@
             };
 
             return (
-                <div className="safe-h flex flex-col items-center justify-center bg-indigo-50 p-6 text-center">
+                <div className="h-full flex flex-col items-center justify-center bg-indigo-50 p-6 text-center">
                     <div className="pop bg-white rounded-3xl shadow-2xl p-8 w-full flex flex-col items-center gap-6" style={{ maxWidth: '640px' }}>
                         <span className="text-4xl">⭐</span>
                         <h2 className="fs-2xl font-bold text-indigo-900 jua">오늘의 미니 퀴즈</h2>
@@ -452,7 +479,7 @@
             };
 
             return (
-                <div className="safe-h flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100 p-6 text-center">
+                <div className="h-full flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100 p-6 text-center">
                     <div className="pop w-full flex flex-col items-center gap-4" style={{ maxWidth: '640px' }}>
                         <Fairy mood="happy" cls="scale-110" />
                         <h2 className="fs-2xl font-bold text-amber-900 jua">다짐 녹음하기! 🎙️</h2>
@@ -495,6 +522,14 @@
         const ChecklistPopup = ({ questions, studentNumber, onComplete }) => {
             const [idx, setIdx] = useState(0);
             const [saving, setSaving] = useState(false);
+            
+            const bgColors = ['bg-pink-100', 'bg-blue-100', 'bg-green-100', 'bg-orange-100', 'bg-purple-100'];
+            const titleColors = ['text-pink-900', 'text-blue-900', 'text-green-900', 'text-orange-900', 'text-purple-900'];
+            const btnColors = ['bg-pink-500 hover:bg-pink-600', 'bg-blue-500 hover:bg-blue-600', 'bg-green-500 hover:bg-green-600', 'bg-orange-500 hover:bg-orange-600', 'bg-purple-500 hover:bg-purple-600'];
+            
+            const curBg = bgColors[idx % 5];
+            const curTitle = titleColors[idx % 5];
+            const curBtn = btnColors[idx % 5];
 
             const ans = async () => {
                 if (idx < questions.length - 1) { setIdx(idx + 1); return; }
@@ -506,18 +541,18 @@
 
             return (
                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white w-full rounded-3xl overflow-hidden shadow-2xl pop" style={{ maxWidth: '420px' }}>
-                        <div className="bg-pink-100 p-6 text-center">
-                            <span className="inline-block bg-pink-200 text-pink-700 fs-xs font-bold px-3 py-1 rounded-full mb-3">
+                    <div className="bg-white w-full rounded-3xl overflow-hidden shadow-2xl pop transition-colors duration-500" style={{ maxWidth: '420px' }}>
+                        <div className={`${curBg} p-6 text-center transition-colors duration-500`}>
+                            <span className="inline-block bg-white/50 text-slate-700 fs-xs font-bold px-3 py-1 rounded-full mb-3">
                                 입학 전 체크리스트 {idx + 1}/{questions.length}
                             </span>
-                            <h2 className="fs-2xl font-bold text-pink-900 jua break-keep leading-relaxed">{questions[idx].항목}</h2>
+                            <h2 className={`fs-2xl font-bold ${curTitle} jua break-keep leading-relaxed transition-colors duration-500`}>{questions[idx].항목}</h2>
                         </div>
                         <div className="p-6 flex flex-col gap-3">
-                            <button disabled={saving} onClick={ans} className={"w-full py-4 fs-lg bg-pink-500 text-white rounded-2xl font-bold shadow-md hover:bg-pink-600 active:scale-95 transition-transform " + (saving ? 'opacity-50' : '')}>
+                            <button disabled={saving} onClick={ans} className={`w-full py-4 fs-lg text-white rounded-2xl font-bold shadow-md active:scale-95 transition-all ${curBtn} ${saving ? 'opacity-50' : ''}`}>
                                 {saving ? '저장 중...' : '네, 완료했어요!'}
                             </button>
-                            <button disabled={saving} onClick={ans} className={"w-full py-4 fs-lg bg-slate-100 text-slate-700 rounded-2xl font-bold shadow hover:bg-slate-200 active:scale-95 transition-transform " + (saving ? 'opacity-50' : '')}>
+                            <button disabled={saving} onClick={ans} className={`w-full py-4 fs-lg bg-slate-100 text-slate-700 rounded-2xl font-bold shadow hover:bg-slate-200 active:scale-95 transition-transform ${saving ? 'opacity-50' : ''}`}>
                                 아직 준비 중이에요
                             </button>
                         </div>
@@ -630,12 +665,95 @@
                 setParentSup(''); setParentNote(''); setTab('student'); setParentSubmitted(false);
             };
 
+            const [activePopup, setActivePopup] = useState(null);
+
+            /* ═══ Parent Popups ═══ */
+            const renderPopup = () => {
+                if (!activePopup) return null;
+                
+                const closePopup = () => setActivePopup(null);
+                
+                if (activePopup === 'tips30') {
+                    return (
+                        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 fade-up">
+                            <div className="bg-white rounded-3xl shadow-xl w-full max-w-lg h-[80vh] flex flex-col overflow-hidden">
+                                <div className="p-4 bg-indigo-50 border-b border-indigo-100 flex justify-between items-center">
+                                    <h2 className="jua fs-lg font-bold text-indigo-900">🏫 초등학교 생활 꿀팁 30선</h2>
+                                    <button onClick={closePopup} className="text-slate-500 hover:text-slate-700 font-bold px-3 py-1 bg-white rounded-full shadow-sm text-lg">X</button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-sc">
+                                    {appData.Transition.map((q, i) => (
+                                        <div key={i} className="flex flex-col gap-2 p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                                            <div className="flex gap-2 items-start">
+                                                <span className="text-indigo-500 jua fs-md shrink-0">Q.</span>
+                                                <span className="font-bold text-indigo-900 fs-sm">{q.질문}</span>
+                                            </div>
+                                            {q.답변 && (
+                                                <div className="flex gap-2 items-start ml-2 mt-2 pt-2 border-t border-slate-50">
+                                                    <span className="text-amber-500 jua fs-md shrink-0">A.</span>
+                                                    <span className="text-slate-700 fs-sm leading-relaxed">{q.답변}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+                
+                if (activePopup === 'eduTips') {
+                    return (
+                        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 fade-up">
+                            <div className="bg-white rounded-3xl shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden">
+                                <div className="p-4 bg-blue-50 border-b border-blue-100 flex justify-between items-center">
+                                    <h2 className="jua fs-lg font-bold text-blue-900">💡 오늘의 가정 연계 교육 팁</h2>
+                                    <button onClick={closePopup} className="text-slate-500 hover:text-slate-700 font-bold px-3 py-1 bg-white rounded-full shadow-sm text-lg">X</button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-sc">
+                                    {tips.map((t, i) => (
+                                        <div key={i} className="border-l-4 border-blue-400 pl-4 py-2">
+                                            <h4 className="font-bold text-blue-900 mb-2 jua fs-lg">{t.제목}</h4>
+                                            <p className="fs-md text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl">{t.내용}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+
+                if (activePopup === 'site') {
+                    return (
+                        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 fade-up">
+                            <div className="bg-white rounded-3xl shadow-xl w-full max-w-sm flex flex-col overflow-hidden text-center pop">
+                                <div className="p-6 bg-emerald-50 flex flex-col items-center gap-3">
+                                    <span className="text-6xl mb-2 bob">🌱</span>
+                                    <h2 className="jua fs-xl font-bold text-emerald-900">유초이음 사이트 활용</h2>
+                                    <p className="text-emerald-700 font-bold fs-sm">입학을 앞둔 우리 아이들을 위한<br/>다양한 정보가 가득합니다!</p>
+                                </div>
+                                <div className="p-6 flex flex-col gap-3">
+                                    <a href="https://www.parents.go.kr/usr/wap/list.do?app=10210&listType=thumb&ctgryCodeSearch=1&nttSjSearchOr=&searchField=&searchText=" target="_blank" rel="noopener noreferrer"
+                                    className="py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-bold jua fs-lg w-full transition-colors">
+                                        새 창으로 이동하기
+                                    </a>
+                                    <button onClick={closePopup} className="py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-bold jua fs-md w-full transition-colors">
+                                        닫기
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+                return null;
+            };
+
             /* ═══ SCREENS ═══ */
             if (loading) return <Spinner text="데이터 불러오는 중..." />;
             if (isSaving) return <Spinner text="기록 저장 중..." />;
 
             if (!micOk) return (
-                <div className="safe-h flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-blue-50 to-blue-100">
+                <div className="h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-blue-50 to-blue-100">
                     <Fairy mood="happy" cls="mb-4 scale-125" />
                     <h1 className="fs-2xl font-bold text-blue-900 jua mb-3">마이크 준비하기</h1>
                     <p className="fs-lg font-bold text-blue-700 mb-5 leading-relaxed">내 목소리로 다짐을 남기기 위해<br />마이크 기능이 필요해요!</p>
@@ -652,7 +770,7 @@
             );
 
             if (!user) return (
-                <div className="safe-h flex flex-col items-center justify-center p-6 bg-gradient-to-b from-amber-50 to-amber-100">
+                <div className="h-full flex flex-col items-center justify-center p-6 bg-gradient-to-b from-amber-50 to-amber-100">
                     <Fairy mood="happy" cls="mb-4 scale-125" />
                     <h1 className="fs-2xl font-bold text-amber-800 jua mb-6 border-b-4 border-amber-300 pb-2">유초이음 성장 기록장</h1>
                     {!GAS_URL && (
@@ -689,7 +807,7 @@
             if (showRec) return <RecordingScreen providedStream={micStream} onDone={() => { setShowRec(false); setStudentSaved(true); }} onSkip={() => { setShowRec(false); setStudentSaved(true); }} />;
 
             if (done) return (
-                <div className="safe-h flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-green-50 to-green-100">
+                <div className="h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-green-50 to-green-100">
                     <Fairy mood="happy" cls="mb-3 scale-150" />
                     <div className="text-6xl mb-3 bob">🏅</div>
                     <h1 className="fs-3xl font-bold text-green-900 jua mb-3">오늘의 기록 완성!</h1>
@@ -719,7 +837,8 @@
             const studentDone = missionsResult !== null && quizDone && studentSaved;
 
             return (
-                <div className="safe-h flex flex-col w-full bg-slate-50 overflow-hidden">
+                <div className="h-full flex flex-col w-full bg-slate-50 overflow-hidden">
+                    {renderPopup()}
 
                     <header className="bg-white px-4 py-2 flex items-center justify-between shadow-sm flex-shrink-0">
                         <div className="flex items-center gap-1">
@@ -740,119 +859,101 @@
                         </button>
                     </div>
 
-                    <div className="flex-1 min-h-0 overflow-hidden px-3 pb-3">
-
+                    <div className="flex-1 overflow-y-auto custom-sc p-3">
                         {tab === 'student' && (
-                            <div className="h-full flex flex-col items-center justify-center fade-up">
-                                {!studentDone ? (
-                                    <div className="bg-white rounded-3xl shadow-md p-7 w-full flex flex-col items-center gap-5 text-center" style={{ maxWidth: '640px' }}>
-                                        <Fairy mood="happy" cls="scale-125" />
-                                        <h2 className="fs-2xl font-bold text-amber-800 jua">오늘의 활동 체크</h2>
-                                        <button onClick={() => setShowMission(true)} className="w-full py-5 bg-amber-400 text-amber-900 fs-xl font-bold jua rounded-2xl shadow-lg hover:bg-amber-500 active:scale-95 transition-transform">
-                                            🌟 체크 시작!
+                            <div className="h-full fade-up flex flex-col gap-4">
+                                <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 text-center">
+                                    <h2 className="jua fs-xl text-slate-800 mb-2">오늘의 성장 미션</h2>
+                                    <p className="fs-md text-slate-500 mb-6">아이와 함께 미션을 수행하고 기록해보세요!</p>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <div className={"p-4 rounded-2xl border-2 " + (missionsResult ? 'bg-green-50 border-green-200' : 'bg-slate-50 border-slate-100')}>
+                                            <div className="text-2xl mb-1">📋</div>
+                                            <div className={"fs-xs font-bold " + (missionsResult ? 'text-green-700' : 'text-slate-400')}>미션</div>
+                                        </div>
+                                        <div className={"p-4 rounded-2xl border-2 " + (quizDone ? 'bg-green-50 border-green-200' : 'bg-slate-50 border-slate-100')}>
+                                            <div className="text-2xl mb-1">💡</div>
+                                            <div className={"fs-xs font-bold " + (quizDone ? 'text-green-700' : 'text-slate-400')}>퀴즈</div>
+                                        </div>
+                                        <div className={"p-4 rounded-2xl border-2 " + (studentSaved ? 'bg-green-50 border-green-200' : 'bg-slate-50 border-slate-100')}>
+                                            <div className="text-2xl mb-1">🎤</div>
+                                            <div className={"fs-xs font-bold " + (studentSaved ? 'text-green-700' : 'text-slate-400')}>다짐</div>
+                                        </div>
+                                    </div>
+                                    {!studentDone && (
+                                        <button onClick={() => setShowMission(true)} className="w-full mt-6 py-4 bg-amber-500 text-white rounded-2xl font-bold jua fs-lg shadow-lg hover:bg-amber-600 active:scale-95 transition-transform">
+                                            활동 시작하기
                                         </button>
-                                    </div>
-                                ) : (
-                                    <div className="h-full w-full flex flex-col gap-4 fade-up">
-                                        <div className="flex items-center justify-center gap-3 flex-shrink-0">
-                                            <div className="text-5xl">✅</div>
-                                            <h2 className="fs-2xl font-bold text-green-800 jua">오늘 활동 완료!</h2>
+                                    )}
+                                    {studentDone && (
+                                        <div className="mt-6 py-4 bg-green-100 text-green-800 rounded-2xl font-bold jua fs-lg">
+                                            ✅ 아이 활동 완료!
                                         </div>
-                                        <div className="flex-1 flex flex-col gap-3 min-h-0">
-                                            {missions.map((m, i) => (
-                                                <div key={i} className="flex-1 flex items-center justify-between bg-white rounded-2xl shadow-sm px-5 py-3 border-l-4 border-green-300">
-                                                    <span className="font-bold text-slate-700 fs-lg text-left">{m.항목}</span>
-                                                    <span className="text-4xl ml-4">{missionsResult[i] === 'good' ? '😃' : '☹️'}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <div className="w-full bg-blue-100 rounded-2xl p-4 border border-blue-200 flex-shrink-0 text-center">
-                                            <p className="text-blue-800 font-bold fs-lg break-keep">
-                                                👨‍👩‍👧 학부모님 탭에서 소감을 남기고<br /><strong>제출하기</strong>를 눌러주세요!
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
                         )}
 
                         {tab === 'parent' && (
-                            <div className="h-full fade-up overflow-y-auto hide-sc flex flex-col gap-3">
-
-                                <a href="https://i-nuri.go.kr/parents/index.do" target="_blank" rel="noopener noreferrer"
-                                    className="flex items-center justify-between px-5 py-4 rounded-2xl shadow-md active:scale-95 transition-transform flex-shrink-0"
-                                    style={{ background: 'linear-gradient(135deg,#10b981,#059669)', color: 'white' }}>
-                                    <div className="flex flex-col gap-0.5">
-                                        <span className="fs-xs font-bold bg-white/25 px-2 py-0.5 rounded-full w-fit">유초이음 공식 사이트</span>
-                                        <span className="fs-lg jua font-bold">아이누리 바로가기 →</span>
-                                    </div>
-                                    <span className="text-4xl bob">🌱</span>
-                                </a>
-
-                                <div className="bg-white rounded-2xl shadow-sm border-t-4 border-blue-400 p-4 flex flex-col gap-3">
-                                    <h2 className="jua font-bold text-blue-900 fs-lg leading-snug">
-                                        아이가 학교생활에 잘 적응하도록 돕고 계신가요?
-                                    </h2>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => setParentSup('잘 돕고 있음')}
-                                            className={"flex-1 py-4 font-bold rounded-xl fs-md transition-all " + (parentSup === '잘 돕고 있음' ? 'bg-blue-500 text-white shadow' : 'bg-slate-100 text-slate-600')}>
-                                            잘 돕고 있어요
-                                        </button>
-                                        <button onClick={() => setParentSup('더 노력할 예정')}
-                                            className={"flex-1 py-4 font-bold rounded-xl fs-md transition-all " + (parentSup === '더 노력할 예정' ? 'bg-orange-400 text-white shadow' : 'bg-slate-100 text-slate-600')}>
-                                            도움이 필요해요
-                                        </button>
-                                    </div>
-                                    <textarea value={parentNote} onChange={e => setParentNote(e.target.value)}
-                                        className="p-3 fs-md rounded-xl border-2 border-slate-100 bg-slate-50 outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none"
-                                        rows="3"
-                                        placeholder="가정에서 느낀 점을 자유롭게 적어주세요." />
-                                    
-                                    {!parentSubmitted ? (
-                                        <button disabled={isSaving} onClick={() => saveRecord(null, { sup: parentSup, note: parentNote })}
-                                            className={"py-4 fs-lg text-white rounded-xl font-bold jua shadow-md transition-transform flex items-center justify-center gap-2 " + (isSaving ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700 active:scale-95')}>
-                                            💾 제출하기
-                                        </button>
-                                    ) : (
-                                        <div className="flex flex-col gap-2 mt-1">
-                                            <div className="bg-green-100 text-green-800 font-bold fs-md py-3 rounded-xl text-center jua flex items-center justify-center gap-2">
-                                                ✅ 제출 완료!
+                            <div className="h-full fade-up flex flex-col">
+                                <div className="flex-1 px-1 pt-1 pb-3 flex flex-col gap-3">
+                                    <div className="bg-white rounded-2xl shadow-sm border-t-4 border-blue-400 p-4 flex flex-col gap-3 flex-1 justify-between">
+                                        <div className="flex flex-col gap-3">
+                                            <h2 className="jua font-bold text-blue-900 fs-lg leading-snug">
+                                                아이가 학교생활에 잘 적응하도록 돕고 계신가요?
+                                            </h2>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => setParentSup('잘 돕고 있음')}
+                                                    className={"flex-1 py-3 font-bold rounded-xl fs-md transition-all " + (parentSup === '잘 돕고 있음' ? 'bg-blue-500 text-white shadow transform scale-[1.02]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200')}>
+                                                    잘 돕고 있어요
+                                                </button>
+                                                <button onClick={() => setParentSup('더 노력할 예정')}
+                                                    className={"flex-1 py-3 font-bold rounded-xl fs-md transition-all " + (parentSup === '더 노력할 예정' ? 'bg-orange-400 text-white shadow transform scale-[1.02]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200')}>
+                                                    도움이 필요해요
+                                                </button>
                                             </div>
-                                            <div className="flex gap-2 mt-1">
-                                                <button onClick={() => setParentSubmitted(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl active:scale-95 transition-transform jua fs-sm">다시 제출하기</button>
-                                                <button onClick={() => setDone(true)} className="flex-1 py-3 bg-amber-500 text-white font-bold rounded-xl shadow-md active:scale-95 transition-transform jua fs-sm px-1">처음으로 (칭찬 완료)</button>
-                                            </div>
+                                            <textarea value={parentNote} onChange={e => setParentNote(e.target.value)}
+                                                className="p-3 fs-md rounded-xl border-2 border-slate-100 bg-slate-50 outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none flex-1 min-h-[5rem]"
+                                                rows="3"
+                                                placeholder="가정에서 느낀 점을 자유롭게 적어주세요." />
                                         </div>
-                                    )}
-                                </div>
-
-                                <Acc title="🏫 초등학교 생활 꿀팁 (30선)">
-                                    <div className="space-y-3">
-                                        {appData.Transition.map((q, i) => (
-                                            <div key={i} className="flex flex-col gap-2">
-                                                <div className="flex gap-2 items-start bg-indigo-50 p-3 rounded-xl border border-indigo-100">
-                                                    <span className="text-indigo-500 jua fs-md shrink-0">Q.</span>
-                                                    <span className="font-bold text-indigo-900 fs-sm pt-0.5">{q.질문}</span>
+                                        
+                                        {!parentSubmitted ? (
+                                            <button disabled={isSaving} onClick={() => saveRecord(null, { sup: parentSup, note: parentNote })}
+                                                className={"py-3 fs-lg text-white rounded-xl font-bold jua shadow-md transition-transform flex items-center justify-center gap-2 " + (isSaving ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700 active:scale-95')}>
+                                                제출하기
+                                            </button>
+                                        ) : (
+                                            <div className="flex flex-col gap-2">
+                                                <div className="bg-green-100 text-green-800 font-bold fs-md py-3 rounded-xl text-center jua flex items-center justify-center gap-2">
+                                                    ✅ 소감 제출 완료!
                                                 </div>
-                                                {q.답변 && (
-                                                    <div className="flex gap-2 items-start bg-white p-3 rounded-xl border border-slate-100 ml-3">
-                                                        <span className="text-amber-500 jua fs-md shrink-0">A.</span>
-                                                        <span className="text-slate-700 fs-sm leading-relaxed pt-0.5">{q.답변}</span>
-                                                    </div>
-                                                )}
+                                                <div className="flex gap-2">
+                                                    <button onClick={() => setParentSubmitted(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl active:scale-95 transition-transform jua fs-sm">다시 수정하기</button>
+                                                    <button onClick={() => setDone(true)} className="flex-1 py-3 bg-amber-500 text-white font-bold rounded-xl shadow-md active:scale-95 transition-transform jua fs-sm px-1">칭찬창으로 이동</button>
+                                                </div>
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
-                                </Acc>
-
-                                <Acc title="💡 오늘의 가정 연계 교육 팁">
-                                    {tips.map((t, i) => (
-                                        <div key={i} className="border-l-4 border-blue-400 pl-4 py-1">
-                                            <h4 className="font-bold text-blue-900 mb-1 jua fs-md">{t.제목}</h4>
-                                            <p className="fs-sm text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg">{t.내용}</p>
-                                        </div>
-                                    ))}
-                                </Acc>
+                                    
+                                    <div className="flex flex-col gap-2 px-1">
+                                        <p className="text-center text-slate-500 font-bold jua fs-sm mb-1">🔍 참고 자료 보기</p>
+                                        <button onClick={() => setActivePopup('tips30')}
+                                            className="w-full bg-indigo-50 hover:bg-indigo-100 active:scale-95 border border-indigo-200 rounded-2xl flex items-center justify-between px-4 py-3 transition-all">
+                                            <span className="jua text-indigo-900 fs-md">🏫 초등학교 생활 꿀팁 30선</span>
+                                            <span className="bg-indigo-500 text-white px-3 py-1 rounded-full font-bold fs-xs">열기</span>
+                                        </button>
+                                        <button onClick={() => setActivePopup('eduTips')}
+                                            className="w-full bg-blue-50 hover:bg-blue-100 active:scale-95 border border-blue-200 rounded-2xl flex items-center justify-between px-4 py-3 transition-all">
+                                            <span className="jua text-blue-900 fs-md">💡 오늘의 가정 연계 교육 팁</span>
+                                            <span className="bg-blue-500 text-white px-3 py-1 rounded-full font-bold fs-xs">열기</span>
+                                        </button>
+                                        <button onClick={() => setActivePopup('site')}
+                                            className="w-full bg-emerald-50 hover:bg-emerald-100 active:scale-95 border border-emerald-200 rounded-2xl flex items-center justify-between px-4 py-3 transition-all">
+                                            <span className="jua text-emerald-900 fs-md">🌱 유초이음 활용 사이트</span>
+                                            <span className="bg-emerald-500 text-white px-3 py-1 rounded-full font-bold fs-xs">열기</span>
+                                        </button>
+                                    </div>
+                                </div>
 
                             </div>
                         )}
