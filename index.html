@@ -797,7 +797,7 @@
                         <div className="w-full bg-white/90 rounded-2xl p-4 flex flex-col gap-2 text-left shadow-sm border-2 border-blue-100">
                             <p className="fs-md jua text-blue-700 mb-1">💬 이런 다짐은 어떨까요?</p>
                             {examples.map((ex, i) => (
-                                <p key={i} className="fs-sm ngo text-slate-700 leading-relaxed pl-3 border-l-4 border-blue-300">{ex}</p>
+                                <p key={i} className="fs-md jua text-slate-700 leading-relaxed pl-3 border-l-4 border-blue-300">{ex}</p>
                             ))}
                         </div>
                         <textarea
@@ -805,7 +805,7 @@
                             onChange={e => setTextInput(e.target.value)}
                             placeholder="여기에 나의 다짐을 적어보세요!"
                             rows="4"
-                            className="w-full p-4 fs-md jua rounded-2xl border-4 border-blue-200 bg-white outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none"
+                            className="w-full p-4 fs-lg jua rounded-2xl border-4 border-blue-200 bg-white outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none leading-relaxed"
                         />
                         <div className="flex gap-2 w-full">
                             <button onClick={() => { sfx.click(); setMode('choose'); setTextInput(''); }} className="py-4 px-4 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">
@@ -830,19 +830,19 @@
                             <div className="w-full bg-white/90 rounded-2xl p-4 flex flex-col gap-2 text-left shadow-sm border-2 border-amber-100">
                                 <p className="fs-md jua text-amber-700 mb-1">💬 이런 다짐은 어떨까요?</p>
                                 {examples.map((ex, i) => (
-                                    <p key={i} className="fs-sm ngo text-slate-700 leading-relaxed pl-3 border-l-4 border-amber-300">{ex}</p>
+                                    <p key={i} className="fs-md jua text-slate-700 leading-relaxed pl-3 border-l-4 border-amber-300">{ex}</p>
                                 ))}
                             </div>
                         )}
 
                         {(state === 'rec' || state === 'done') && (
                             <div className="w-full bg-white rounded-2xl p-4 flex flex-col gap-2 shadow-sm border-2 border-amber-200">
-                                <p className="fs-sm jua text-amber-700 text-left flex items-center gap-2">
+                                <p className="fs-md jua text-amber-700 text-left flex items-center gap-2">
                                     {state === 'rec' ? <><span className="inline-block w-3 h-3 bg-red-500 rounded-full pulse-anim"></span> 듣고 있어요...</> : '📝 내가 말한 내용'}
                                 </p>
                                 {state === 'rec' ? (
-                                    <div className="min-h-[5rem] p-3 bg-amber-50 rounded-xl text-left fs-md ngo text-slate-700 leading-relaxed">
-                                        {sttText || <span className="text-slate-400 fs-sm">목소리를 들려주세요!</span>}
+                                    <div className="min-h-[6rem] p-4 bg-amber-50 rounded-xl text-left fs-lg jua text-slate-700 leading-relaxed">
+                                        {sttText || <span className="text-slate-400 fs-md">목소리를 들려주세요!</span>}
                                     </div>
                                 ) : (
                                     <textarea
@@ -850,7 +850,7 @@
                                         onChange={e => setEditableStt(e.target.value)}
                                         placeholder="변환된 글자를 확인하고 수정할 수 있어요"
                                         rows="3"
-                                        className="w-full p-3 fs-md ngo rounded-xl border-2 border-amber-100 bg-amber-50 outline-none focus:border-amber-400 text-slate-700 resize-none"
+                                        className="w-full p-4 fs-lg jua rounded-xl border-2 border-amber-100 bg-amber-50 outline-none focus:border-amber-400 text-slate-700 resize-none leading-relaxed"
                                     />
                                 )}
                             </div>
@@ -1385,7 +1385,7 @@
                                         </button>
                                     </div>
                                     <textarea value={parentNote} onChange={e => setParentNote(e.target.value)}
-                                        className="p-3 fs-sm ngo rounded-xl border-2 border-slate-100 bg-slate-50 outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none min-h-[5rem]"
+                                        className="p-4 fs-md jua rounded-xl border-2 border-slate-100 bg-slate-50 outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none min-h-[6rem] leading-relaxed"
                                         rows="3"
                                         placeholder="가정에서 느낀 점을 자유롭게 적어주세요." />
 
