@@ -110,6 +110,40 @@
            ★ 3주 프로그램 데이터 ★
         ══════════════════════════════════════════════ */
 
+        // 초등학교 생활 꿀팁 30선 (코드에 직접 포함 - 시트 의존 X)
+        const TIPS_30 = [
+            { 질문: '입학을 앞두고 아이가 학교 가기를 두려워해요.', 답변: '부모님의 학교생활 경험 중 재미있었던 에피소드를 자주 들려주시며 기대감을 심어주세요.', 카테고리: '심리' },
+            { 질문: '한글은 어느 정도 알고 가야 하나요?', 답변: '자기 이름을 읽고 쓸 줄 알며, 기본적인 자음과 모음을 구별하는 정도면 충분히 시작할 수 있습니다.', 카테고리: '학습' },
+            { 질문: '숫자는 어디까지 세어야 하나요?', 답변: '1부터 50까지 수의 순서를 알고, 10 이내의 덧셈 뺄셈 기초 정도면 1학년 수학에 무리가 없습니다.', 카테고리: '학습' },
+            { 질문: '화장실 뒤처리를 혼자서 못 합니다.', 답변: '입학 전 배변 후 스스로 엉덩이를 닦는 연습을 가정에서 충분히 시켜주세요. 물티슈를 활용하면 좋습니다.', 카테고리: '생활' },
+            { 질문: '화변기(쪼그려 앉는 변기) 사용을 어려워합니다.', 답변: '양변기가 많지만 화변기가 있을 수 있으니, 발 놓는 위치와 앉는 자세를 미리 알려주시면 당황하지 않습니다.', 카테고리: '생활' },
+            { 질문: '밥을 너무 늦게 먹어요.', 답변: '급식 시간은 보통 30~40분입니다. 타이머를 맞춰두고 정해진 시간 안에 골고루 먹는 습관을 들여보세요.', 카테고리: '생활' },
+            { 질문: '매운 음식을 전혀 못 먹어요.', 답변: '깍두기, 김치 등을 물에 씻어 조금씩 맛보는 연습을 시도해보세요. 억지로 먹이기보단 작은 도전에 칭찬해 주세요.', 카테고리: '생활' },
+            { 질문: '편식이 심해서 급식을 안 먹을까 걱정입니다.', 답변: '식단표를 미리 살펴보며 부모님과 좋아하는 반찬을 찾아보고 학교 급식에 대한 기대감을 갖게 해 주세요.', 카테고리: '생활' },
+            { 질문: '우유 팩을 혼자 못 엽니다.', 답변: '양쪽을 벌리고 한쪽을 밀어 여는 방법을 반복 연습시켜주세요. (최근엔 무상 우유가 없어진 곳도 많습니다.)', 카테고리: '자립' },
+            { 질문: '알림장을 스스로 확인하는 습관은 어떻게 들이나요?', 답변: '하교 후 가방을 열어 알림장과 가정통신문을 지정된 장소에 직접 꺼내놓는 것부터 시작하세요.', 카테고리: '자립' },
+            { 질문: '아침에 스스로 일어나는 것을 힘들어합니다.', 답변: '잠자리에 드는 시간을 30분 앞당기고, 아이가 좋아하는 알람 소리를 직접 고르게 하여 책임감을 부여하세요.', 카테고리: '자립' },
+            { 질문: '준비물을 혼자 챙기게 도와주고 싶은데 어떻게 할까요?', 답변: '첫 달은 부모님이 함께 챙기고, 이후엔 아이가 먼저 챙기게 한 뒤 주무시기 전 맞는지 최종 검토만 해주세요.', 카테고리: '자립' },
+            { 질문: '수업 시간에 40분 동안 가만히 앉아있을 수 있을까요?', 답변: '처음엔 15분부터 시작해서 책 읽기, 퍼즐 등을 하며 자리에 앉아 집중하는 시간을 서서히 40분까지 늘려보세요.', 카테고리: '태도' },
+            { 질문: '선생님 말씀에 집중하지 않을까 불안합니다.', 답변: '대화할 때 부모님이 먼저 아이의 눈을 맞추고 끝까지 집중해서 듣는 모범을 보여주시는 것이 중요합니다.', 카테고리: '태도' },
+            { 질문: '아이가 내성적이라 친구를 못 사귈까 봐 걱정입니다.', 답변: '억지로 무리에 넣기보다, 마음에 맞는 단 한 명의 친구와 자연스럽게 어울리는 기회를 많이 만들어주세요.', 카테고리: '사회성' },
+            { 질문: '친구가 괴롭히면 어떻게 대처하라고 가르쳐야 할까요?', 답변: '"싫어, 하지 마!"라고 정확히 자기 의사를 표현하고, 그래도 안 되면 즉시 담임 선생님께 말씀드리라고 당부하세요.', 카테고리: '안전' },
+            { 질문: '쉬는 시간을 어떻게 보내야 하는지 모르는 것 같습니다.', 답변: '10분 쉬는 시간에 화장실에 다녀오고 물을 마신 후, 다음 시간 책을 꺼내놓는 루틴을 알려주세요.', 카테고리: '생활' },
+            { 질문: '복도에서 뛰지 않게 하려면 어떻게 하죠?', 답변: '"학교 건물 안에서는 무조건 걸어 다니는 거야"라고 예비소집일이나 학교 방문 시에 미리 당부해 주세요.', 카테고리: '안전' },
+            { 질문: '물건을 너무 자주 잃어버려요.', 답변: '지우개 하나, 색연필 한 자루에까지 모두 이름표를 붙이고, 다 쓴 후 필통에 바로 넣는 습관을 반복 지도하세요.', 카테고리: '자립' },
+            { 질문: '갑자기 배가 아프면 어쩌죠?', 답변: '손을 번쩍 들고 선생님께 "배가 아파서 보건실에 다녀와도 될까요?"라고 또박또박 말하는 역할극을 해보세요.', 카테고리: '안전' },
+            { 질문: '스마트폰은 언제 사주는 것이 좋을까요?', 답변: '최대한 늦추는 것이 좋으며, 필요하다면 영상 시청이 제한되는 키즈폰으로 시작해 엄격한 규칙을 정하세요.', 카테고리: '생활' },
+            { 질문: '방과 후 이동을 혼자 잘할 수 있을까요?', 답변: '입학 초반에는 선생님들이 챙겨주십니다. 아이가 가야 할 교실 이름과 위치를 외울 수 있도록 도와주세요.', 카테고리: '안전' },
+            { 질문: '선생님께 질문하는 것을 두려워합니다.', 답변: '모르는 것은 부끄러운 게 아님을 알려주고, 식당에서 직접 주문해 보는 등 낯선 어른에게 말 거는 연습을 하세요.', 카테고리: '사회성' },
+            { 질문: '그림일기를 어려워해요. 매일 써야 하나요?', 답변: '내용이 적어도 좋으니 그날 제일 재밌었던 일 하나만 자유롭게 쓰고 그리게 하며 쓰기 스트레스를 덜어주세요.', 카테고리: '학습' },
+            { 질문: '글씨를 너무 대충 씁니다.', 답변: '깍두기 공책을 이용해 칸의 중심을 잡고 천천히 바르게 쓰는 연습을 하루에 1~2줄씩만 꾸준히 하게 해주세요.', 카테고리: '학습' },
+            { 질문: '아이가 놀이에서 지는 것을 못 견디고 울어요.', 답변: '보드게임 등을 하며 정정당당하게 지는 법, 지더라도 "축하해"라고 말하는 패배 인정의 태도를 가르쳐주세요.', 카테고리: '사회성' },
+            { 질문: '양치질을 혼자 깨끗하게 못 해요.', 답변: '치카송(3분)을 틀어두고 닦는 순서를 알려주세요. 저학년 때는 하교 후 부모님이 한 번 더 점검해주시면 좋습니다.', 카테고리: '생활' },
+            { 질문: '학교 폭력이 걱정됩니다. 어떻게 예방하죠?', 답변: '하루 일과를 묻는 습관을 들이고, 사소한 다툼이라도 원만하게 해결되지 않을 조짐이 보이면 즉시 선생님과 상담하세요.', 카테고리: '안전' },
+            { 질문: '욕설이나 나쁜 말을 배워오면 어떡하나요?', 답변: '과민 반응하기보다 그 뜻을 아는지 묻고, 얼마나 나쁜 말인지 설명한 뒤 "우리는 예쁜 말만 쓰자"고 다독여주세요.', 카테고리: '인성' },
+            { 질문: '1학년 적응에 가장 필요한 부모의 역할은?', 답변: '남과 비교하지 않고 아이의 작은 성장을 발견해 매일 아낌없이 칭찬해 주는 든든한 지지자가 되어주시는 것입니다.', 카테고리: '마음가짐' }
+        ];
+
         // 15개 명언 (유치원~1학년 눈높이, 자존감/공감 중심)
         const QUOTES = [
             "오늘도 학교에 와줘서 정말 고마워!",
@@ -910,30 +944,35 @@
                             ))}
                         </div>
 
-                        {/* 녹음 상태/결과 - 녹음 중이거나 완료 시에만 */}
-                        {state === 'rec' && (
-                            <div className="w-full bg-red-50 rounded-2xl p-4 border-2 border-red-300 flex items-center gap-3 pop">
-                                <span className="inline-block w-5 h-5 bg-red-500 rounded-full pulse-anim"></span>
-                                <p className="fs-lg jua text-red-700 flex-1 text-left">듣고 있어요... 따라 말해보세요!</p>
-                            </div>
-                        )}
-
-                        {state === 'done' && editableStt && (
-                            <div className="w-full bg-green-50 rounded-2xl p-4 border-2 border-green-300 pop">
-                                <p className="fs-md jua text-green-700 mb-2 flex items-center gap-2">
-                                    <span className="text-2xl">📝</span> 내가 말한 내용이에요!
+                        {/* 실시간 받아적기 박스 - 녹음 중부터 즉시 표시 */}
+                        {(state === 'rec' || state === 'done') && (
+                            <div className={"w-full rounded-2xl p-4 border-3 pop transition-colors " + (state === 'rec' ? 'bg-red-50 border-red-300' : 'bg-green-50 border-green-300')} style={{borderWidth:'3px'}}>
+                                <p className="fs-md jua text-left mb-2 flex items-center gap-2">
+                                    {state === 'rec' ? (
+                                        <><span className="inline-block w-4 h-4 bg-red-500 rounded-full pulse-anim"></span>
+                                        <span className="text-red-700">🎤 듣고 있어요... 말해보세요!</span></>
+                                    ) : (
+                                        <><span className="text-2xl">📝</span>
+                                        <span className="text-green-700">내가 말한 내용이에요!</span></>
+                                    )}
                                 </p>
-                                <p className="fs-lg jua text-slate-800 leading-relaxed bg-white rounded-xl p-3 text-left">
-                                    "{editableStt}"
-                                </p>
-                            </div>
-                        )}
-
-                        {state === 'done' && !editableStt && (
-                            <div className="w-full bg-orange-50 rounded-2xl p-3 border-2 border-orange-200 pop">
-                                <p className="fs-md jua text-orange-700">
-                                    🎤 녹음은 잘 됐어요! (글자 변환은 안 됐지만 괜찮아요)
-                                </p>
+                                <div className="bg-white rounded-xl p-4 min-h-[7rem] text-left">
+                                    {sttText ? (
+                                        <p className="fs-lg jua text-slate-800 leading-relaxed">
+                                            {sttFinal}
+                                            {state === 'rec' && sttText.length > sttFinal.length && (
+                                                <span className="text-slate-400">{sttText.slice(sttFinal.length)}</span>
+                                            )}
+                                        </p>
+                                    ) : (
+                                        <p className="fs-md jua text-slate-300 italic">
+                                            {state === 'rec' ? '🎙️ 말하는 글자가 여기에 나타나요...' : '(녹음만 됐어요. 글자 변환은 안 됐어요.)'}
+                                        </p>
+                                    )}
+                                </div>
+                                {state === 'rec' && (
+                                    <p className="fs-sm jua text-red-600 mt-2 text-center">✨ 잘 들리나요? 글자가 보이면 확인하고 녹음 완료를 누르세요!</p>
+                                )}
                             </div>
                         )}
 
@@ -1174,7 +1213,9 @@
                 const close = () => { sfx.click(); setActivePopup(null); stopSpeak(); };
 
                 if (activePopup === 'tips30') {
-                    const list = appData.Transition || [];
+                    // 코드에 박힌 30선 + 시트 데이터 합쳐서 표시 (시트 데이터 우선)
+                    const sheetTips = (appData.Transition || []).filter(q => q.질문 || q.Q || q.question);
+                    const list = sheetTips.length > 1 ? sheetTips : TIPS_30;
                     return (
                         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-3 fade-up">
                             <div className="bg-white rounded-3xl shadow-xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
@@ -1183,14 +1224,7 @@
                                     <button onClick={close} className="bg-white text-slate-500 px-3 py-1 rounded-full shadow-sm fs-sm jua">닫기</button>
                                 </div>
                                 <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-sc">
-                                    {list.length === 0 && (
-                                        <div className="text-center py-8 text-slate-400 jua fs-md">
-                                            데이터를 불러올 수 없어요.<br/>
-                                            🛠 연결 진단으로 확인해주세요.
-                                        </div>
-                                    )}
                                     {list.map((q, i) => {
-                                        // 시트 컬럼명이 다를 수 있어 fallback 처리
                                         const question = q.질문 || q.Q || q.question || '';
                                         const answer = q.답변 || q.A || q.answer || '';
                                         const category = q.카테고리 || q.category || '';
