@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>유초이음 학교생활 적응 앱</title>
+    <title>유초이음 적응 앱</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -14,43 +14,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&family=Black+Han+Sans&display=swap" rel="stylesheet">
     <style>
         *,*::before,*::after { box-sizing: border-box; }
-        html, body {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            overflow: hidden;
-            -webkit-text-size-adjust: 100%;
-        }
-        body {
-            font-family: 'Nanum Gothic', 'Jua', sans-serif;
-            font-weight: 700;
-            background: #ffffff;
-            overscroll-behavior: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        #root {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            align-items: stretch;
-            justify-content: stretch;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-        }
-        .app-frame {
-            width: 100%;
-            height: 100%;
-            background: white;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+        html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; -webkit-text-size-adjust:100%; }
+        body { font-family: 'Nanum Gothic', 'Jua', sans-serif; font-weight:700; background:#fff; overscroll-behavior:none; -webkit-tap-highlight-color:transparent; }
+        #root { position:fixed; inset:0; display:flex; align-items:stretch; justify-content:stretch; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+        .app-frame { width:100%; height:100%; background:white; overflow:hidden; display:flex; flex-direction:column; position:relative; }
         .jua { font-family: 'Jua', 'Nanum Gothic', sans-serif; }
-        .ngo { font-family: 'Nanum Gothic', sans-serif; font-weight: 800; }
+        .ngo { font-family: 'Nanum Gothic', sans-serif; font-weight:800; }
 
-        .custom-sc::-webkit-scrollbar { width: 8px; height: 8px; }
-        .custom-sc::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); border-radius: 10px; }
-        .custom-sc::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-        .custom-sc { scrollbar-width: thin; scrollbar-color: #cbd5e1 rgba(0,0,0,0.02); }
+        .custom-sc::-webkit-scrollbar { width:8px; height:8px; }
+        .custom-sc::-webkit-scrollbar-track { background:rgba(0,0,0,0.02); border-radius:10px; }
+        .custom-sc::-webkit-scrollbar-thumb { background-color:#cbd5e1; border-radius:10px; }
+        .custom-sc { scrollbar-width:thin; scrollbar-color:#cbd5e1 rgba(0,0,0,0.02); }
 
         :root {
             --fs-xs: clamp(0.85rem, 1.4vmin, 1.05rem);
@@ -61,36 +35,21 @@
             --fs-2xl: clamp(2.2rem, 4.8vmin, 3.3rem);
             --fs-3xl: clamp(2.7rem, 6vmin, 4.2rem);
         }
-        .fs-xs { font-size: var(--fs-xs); }
-        .fs-sm { font-size: var(--fs-sm); }
-        .fs-md { font-size: var(--fs-md); }
-        .fs-lg { font-size: var(--fs-lg); }
-        .fs-xl { font-size: var(--fs-xl); }
-        .fs-2xl { font-size: var(--fs-2xl); }
-        .fs-3xl { font-size: var(--fs-3xl); }
+        .fs-xs{font-size:var(--fs-xs)} .fs-sm{font-size:var(--fs-sm)} .fs-md{font-size:var(--fs-md)}
+        .fs-lg{font-size:var(--fs-lg)} .fs-xl{font-size:var(--fs-xl)} .fs-2xl{font-size:var(--fs-2xl)} .fs-3xl{font-size:var(--fs-3xl)}
 
-        @keyframes fade-up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fade-up { from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)} }
         .fade-up { animation: fade-up .3s ease-out both; }
-
-        @keyframes pop { from { opacity:0; transform:scale(.7); } to { opacity:1; transform:scale(1); } }
+        @keyframes pop { from{opacity:0; transform:scale(.7)} to{opacity:1; transform:scale(1)} }
         .pop { animation: pop .35s cubic-bezier(.34,1.56,.64,1) both; }
-
-        @keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+        @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
         .bob { animation: bob 2s ease-in-out infinite; }
-
-        @keyframes wiggle {
-            0%,100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
-        }
+        @keyframes wiggle { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-5deg)} 75%{transform:rotate(5deg)} }
         .wiggle { animation: wiggle 1.5s ease-in-out infinite; }
-
-        @keyframes spin { to { transform:rotate(360deg); } }
+        @keyframes spin { to { transform:rotate(360deg) } }
         .spin-anim { animation: spin .9s linear infinite; }
-
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
         .pulse-anim { animation: pulse 1.6s ease-in-out infinite; }
-
         @keyframes blink-red {
             0%,100% { background:#ef4444; box-shadow:0 0 0 0 rgba(239,68,68,.7); }
             50% { background:#dc2626; box-shadow:0 0 0 12px rgba(239,68,68,0); }
@@ -103,54 +62,40 @@
             100% { transform: translate(var(--tx),var(--ty)) rotate(720deg) scale(.5); opacity: 0; }
         }
         .confetti {
-            position: absolute;
-            top: 50%; left: 50%;
+            position: absolute; top: 50%; left: 50%;
             font-size: clamp(2rem, 4vmin, 3.5rem);
             pointer-events: none;
             animation: confetti-fall 1.6s cubic-bezier(.4,.7,.7,1) forwards;
             z-index: 100;
         }
 
-        .tts-highlight {
-            background: linear-gradient(120deg, #fde68a 0%, #fcd34d 100%);
-            border-radius: 4px;
-            padding: 0 3px;
-            margin: 0 1px;
-            transition: background .15s ease;
-        }
+        .tts-highlight { background: linear-gradient(120deg, #fde68a 0%, #fcd34d 100%); border-radius: 4px; padding: 0 3px; margin: 0 1px; transition: background .15s ease; }
         .tts-word { transition: all .15s ease; }
 
-        .btn-shadow {
-            box-shadow: 0 6px 0 rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.08);
-            transition: all .15s ease;
-        }
-        .btn-shadow:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.08);
-        }
+        .btn-shadow { box-shadow: 0 6px 0 rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.08); transition: all .15s ease; }
+        .btn-shadow:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.08); }
 
-        .speaker-on-glow {
-            box-shadow: 0 0 0 3px rgba(96,165,250,.4), 0 4px 12px rgba(96,165,250,.3);
-        }
+        .speaker-on-glow { box-shadow: 0 0 0 3px rgba(96,165,250,.4), 0 4px 12px rgba(96,165,250,.3); }
 
         select {
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1.5em;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
+            background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.5em;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
             padding-right: 3rem !important;
         }
         select option { font-family: 'Jua', sans-serif; padding: 8px; }
 
-        .rainbow-text {
-            background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .rainbow-text { background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #8b5cf6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .mood-btn { transition: all 0.2s; }
+        .mood-btn-selected { transform: scale(1.15); }
+
+        @keyframes sticker-in {
+            0% { opacity: 0; transform: scale(0) rotate(-180deg); }
+            70% { opacity: 1; transform: scale(1.4) rotate(20deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
+        .sticker-in { animation: sticker-in .8s cubic-bezier(.34,1.56,.64,1) both; }
     </style>
 </head>
 
@@ -161,7 +106,58 @@
 
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbxcgilhwhUVIC-E_rUFZj2lqMC-JUWs_VjdQWKNy-DmG-qNuzffSSDya9nsVcD6lYtcYQ/exec';
 
-        /* 디버그 로그 */
+        /* ══════════════════════════════════════════════
+           ★ 3주 프로그램 데이터 ★
+        ══════════════════════════════════════════════ */
+
+        // 15개 명언 (유치원 눈높이)
+        const QUOTES = [
+            "오늘도 학교에 와줘서 정말 고마워!",
+            "넘어져도 다시 일어서면 진짜 멋져!",
+            "친구에게 먼저 인사하면 친구가 생겨요.",
+            "모르는 건 부끄러운 게 아니에요. 물어보면 돼요!",
+            "내가 한 일은 내가 정리해요. 멋있죠?",
+            "조금 천천히 해도 괜찮아요. 잘하고 있어요!",
+            "친구가 잘하면 박수를 쳐줘요. 우리는 한 팀!",
+            "오늘 한 가지 새로운 걸 배웠어요. 와! 멋져요!",
+            "선생님 말씀을 잘 들으면 똑똑해져요!",
+            "맛있게 먹고 튼튼해지는 게 1학년의 일이에요.",
+            "친구랑 사이좋게 노는 너, 정말 자랑스러워!",
+            "실수해도 괜찮아. 다음에 더 잘하면 돼요!",
+            "스스로 한 너에게 칭찬을 듬뿍 줄게!",
+            "꿈은 매일 자라나요. 너도 매일 자라!",
+            "오늘 학교생활, 정말 잘 해냈어! 👏"
+        ];
+
+        // 15개 스티커 (3주 컬렉션)
+        const STICKER_POOL = [
+            { id: 1, emoji: '🌟', name: '반짝별' },
+            { id: 2, emoji: '🌈', name: '무지개' },
+            { id: 3, emoji: '🦄', name: '유니콘' },
+            { id: 4, emoji: '🎀', name: '리본' },
+            { id: 5, emoji: '🌸', name: '벚꽃' },
+            { id: 6, emoji: '🍀', name: '네잎클로버' },
+            { id: 7, emoji: '🐻', name: '곰돌이' },
+            { id: 8, emoji: '🐰', name: '토끼' },
+            { id: 9, emoji: '🦋', name: '나비' },
+            { id: 10, emoji: '🌻', name: '해바라기' },
+            { id: 11, emoji: '🍭', name: '사탕' },
+            { id: 12, emoji: '🎈', name: '풍선' },
+            { id: 13, emoji: '⭐', name: '별' },
+            { id: 14, emoji: '💎', name: '다이아' },
+            { id: 15, emoji: '🏆', name: '트로피' },
+        ];
+
+        // 마음 온도계
+        const MOODS = [
+            { emoji: '😄', label: '최고예요!', color: 'from-yellow-200 to-orange-300', textColor: 'text-orange-800' },
+            { emoji: '😊', label: '좋아요', color: 'from-green-100 to-green-200', textColor: 'text-green-800' },
+            { emoji: '😐', label: '그냥 그래요', color: 'from-slate-100 to-slate-200', textColor: 'text-slate-700' },
+            { emoji: '😢', label: '슬퍼요', color: 'from-blue-100 to-blue-200', textColor: 'text-blue-800' },
+            { emoji: '😭', label: '많이 힘들어요', color: 'from-red-100 to-red-200', textColor: 'text-red-800' },
+        ];
+
+        /* 디버그 */
         const debugLogs = [];
         const debugListeners = [];
         const dbg = (type, msg, data) => {
@@ -190,7 +186,7 @@
             },
             async post(payload) {
                 if (!GAS_URL) return { success: true, mock: true };
-                dbg('POST', `요청: ${payload.action}`, payload);
+                dbg('POST', `요청: ${payload.action}`);
                 try {
                     const res = await fetch(GAS_URL, {
                         method: 'POST',
@@ -198,13 +194,12 @@
                         body: JSON.stringify(payload),
                         redirect: 'follow'
                     });
-                    dbg('POST', `응답: ${res.status}`);
                     const text = await res.text();
                     try {
                         const json = JSON.parse(text);
                         dbg('POST', `${payload.action} 결과`, json);
                         return json;
-                    } catch(e) { dbg('ERR', 'POST JSON 파싱 실패', { preview: text.slice(0, 200) }); return { success: false }; }
+                    } catch(e) { dbg('ERR', 'POST JSON 파싱 실패', text.slice(0, 200)); return { success: false }; }
                 } catch (e) { dbg('ERR', 'POST 네트워크 오류', e.toString()); return { success: false }; }
             }
         };
@@ -215,25 +210,16 @@
             if (cachedVoice) return cachedVoice;
             const voices = window.speechSynthesis.getVoices();
             if (!voices.length) return null;
-
             let v = voices.find(x => x.lang === 'ko-KR' && x.name.toLowerCase().includes('google') && !x.localService);
-            if (v) { cachedVoice = v; dbg('TTS', '🌟 Google 클라우드 음성', v.name); return v; }
-
+            if (v) { cachedVoice = v; return v; }
             v = voices.find(x => x.lang === 'ko-KR' && /wavenet|neural|premium|enhanced|natural/i.test(x.name));
-            if (v) { cachedVoice = v; dbg('TTS', '🌟 자연 음성', v.name); return v; }
-
+            if (v) { cachedVoice = v; return v; }
             v = voices.find(x => x.lang === 'ko-KR' && x.name.toLowerCase().includes('google'));
-            if (v) { cachedVoice = v; dbg('TTS', 'Google 로컬', v.name); return v; }
-
-            v = voices.find(x => x.lang.startsWith('ko') && /female|woman|여/i.test(x.name));
-            if (v) { cachedVoice = v; dbg('TTS', '한국어 여성', v.name); return v; }
-
+            if (v) { cachedVoice = v; return v; }
             v = voices.find(x => x.lang.startsWith('ko'));
-            if (v) { cachedVoice = v; dbg('TTS', '한국어', v.name); return v; }
-
+            if (v) { cachedVoice = v; return v; }
             return voices[0];
         };
-
         const speak = (text, opts = {}) => {
             return new Promise((resolve) => {
                 if (!('speechSynthesis' in window)) { resolve(); return; }
@@ -255,56 +241,34 @@
 
         /* 효과음 */
         let audioCtx = null;
-        let speakerEnabled = false; // 스피커 상태 (효과음/TTS 공통 게이트)
+        let speakerEnabled = false;
         const setSpeakerEnabled = (v) => { speakerEnabled = v; };
         const getAudio = () => {
             if (!audioCtx) {
-                try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-                catch(e) { return null; }
+                try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { return null; }
             }
             if (audioCtx.state === 'suspended') audioCtx.resume();
             return audioCtx;
         };
         const playTone = (freq, dur, type='sine', vol=0.15) => {
-            if (!speakerEnabled) return; // 스피커 OFF면 무음
-            const ctx = getAudio();
-            if (!ctx) return;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = type;
-            osc.frequency.value = freq;
+            if (!speakerEnabled) return;
+            const ctx = getAudio(); if (!ctx) return;
+            const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            osc.type = type; osc.frequency.value = freq;
             gain.gain.setValueAtTime(vol, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + dur);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(); osc.stop(ctx.currentTime + dur);
         };
         const sfx = {
             click: () => playTone(800, 0.08, 'sine', 0.1),
-            correct: () => {
-                playTone(523, 0.12, 'sine', 0.15);
-                setTimeout(() => playTone(659, 0.12, 'sine', 0.15), 100);
-                setTimeout(() => playTone(784, 0.2, 'sine', 0.15), 200);
-            },
-            wrong: () => {
-                playTone(300, 0.15, 'sawtooth', 0.1);
-                setTimeout(() => playTone(200, 0.25, 'sawtooth', 0.1), 150);
-            },
-            complete: () => {
-                playTone(523, 0.1, 'sine', 0.15);
-                setTimeout(() => playTone(659, 0.1, 'sine', 0.15), 100);
-                setTimeout(() => playTone(784, 0.1, 'sine', 0.15), 200);
-                setTimeout(() => playTone(1047, 0.3, 'sine', 0.15), 300);
-            },
-            sparkle: () => {
-                for (let i = 0; i < 3; i++) {
-                    setTimeout(() => playTone(1200 + i*300, 0.08, 'sine', 0.1), i*60);
-                }
-            }
+            correct: () => { playTone(523,0.12); setTimeout(()=>playTone(659,0.12),100); setTimeout(()=>playTone(784,0.2),200); },
+            wrong: () => { playTone(300,0.15,'sawtooth',0.1); setTimeout(()=>playTone(200,0.25,'sawtooth',0.1),150); },
+            complete: () => { playTone(523,0.1); setTimeout(()=>playTone(659,0.1),100); setTimeout(()=>playTone(784,0.1),200); setTimeout(()=>playTone(1047,0.3),300); },
+            sparkle: () => { for (let i=0;i<3;i++) setTimeout(()=>playTone(1200+i*300,0.08),i*60); }
         };
 
-        /* 칭찬 스티커 */
+        /* 칭찬 스티커 폭죽 */
         const StickerBurst = ({ stickers = ['⭐','🌟','💖','🎉','🌈','✨','🎀','🌸'], onDone }) => {
             const [items] = useState(() => {
                 const out = [];
@@ -344,7 +308,6 @@
         const HighlightedText = ({ text, speakerOn, autoPlay = false, onDone, className = '' }) => {
             const [hlIdx, setHlIdx] = useState(-1);
             const playingRef = useRef(false);
-
             const play = useCallback(async () => {
                 if (!speakerOn) { onDone && onDone(); return; }
                 if (playingRef.current) return;
@@ -352,18 +315,12 @@
                 stopSpeak();
                 let wordIdx = -1;
                 await speak(text, {
-                    onBoundary: (e) => {
-                        if (e.name === 'word') {
-                            wordIdx++;
-                            setHlIdx(wordIdx);
-                        }
-                    }
+                    onBoundary: (e) => { if (e.name === 'word') { wordIdx++; setHlIdx(wordIdx); } }
                 });
                 setHlIdx(-1);
                 playingRef.current = false;
                 onDone && onDone();
             }, [text, speakerOn, onDone]);
-
             useEffect(() => {
                 if (autoPlay && speakerOn) {
                     const t = setTimeout(play, 300);
@@ -371,7 +328,6 @@
                 }
                 if (autoPlay && !speakerOn) onDone && onDone();
             }, [autoPlay, speakerOn]);
-
             const words = text.split(/(\s+)/);
             let wIdx = -1;
             return (
@@ -380,11 +336,7 @@
                         if (/^\s+$/.test(w)) return <span key={i}>{w}</span>;
                         wIdx++;
                         const isHl = wIdx === hlIdx;
-                        return (
-                            <span key={i} className={"tts-word " + (isHl ? 'tts-highlight' : '')}>
-                                {w}
-                            </span>
-                        );
+                        return <span key={i} className={"tts-word " + (isHl ? 'tts-highlight' : '')}>{w}</span>;
                     })}
                 </span>
             );
@@ -393,24 +345,17 @@
         /* 샘플 데이터 */
         const MOCK = {
             Students: [{ 학번: '10101', 이름: '새싹이' }, { 학번: '10102', 이름: '김철수' }, { 학번: '10103', 이름: '이영희' }],
-            Education: [
-                { 제목: '우유팩 혼자 열기 연습', 내용: '학교 급식시간에 우유를 스스로 열 수 있도록 집에서 미리 연습시켜주세요!' },
-            ],
+            Education: [{ 제목: '우유팩 혼자 열기 연습', 내용: '학교 급식시간에 우유를 스스로 열 수 있도록 집에서 미리 연습시켜주세요!' }],
             Checklist: [
                 { 항목: '취학 전 필수 예방접종을 모두 마쳤나요?', 카테고리: '입학전' },
                 { 항목: '학교 가는 길을 안전하게 걸어보는 연습을 했나요?', 카테고리: '입학전' },
-                { 항목: '화장실에 혼자 다녀오고 스스로 뒷정리를 할 수 있나요?', 카테고리: '입학전' },
-                { 항목: '내 필통과 학용품에 이름표를 모두 붙였나요?', 카테고리: '입학전' },
-                { 항목: '외투나 신발을 스스로 입고 벗을 수 있나요?', 카테고리: '입학전' },
                 { 항목: '아침에 스스로 일어났나요?', 카테고리: '데일리' },
                 { 항목: '알림장을 스스로 확인했나요?', 카테고리: '데일리' },
                 { 항목: '화장실 다녀와서 손 씻었나요?', 카테고리: '데일리' },
                 { 항목: '내 자리를 정돈했나요?', 카테고리: '데일리' },
                 { 항목: '선생님께 웃으며 인사했나요?', 카테고리: '데일리' },
             ],
-            Transition: [
-                { 질문: '준비물을 혼자 챙기게 도와주고 싶은데 어떻게 할까요?', 답변: '첫 달은 부모님이 함께 챙기고, 이후엔 아이가 먼저 챙기게 한 뒤 최종 검토만 해주세요.', 카테고리: '자립' },
-            ],
+            Transition: [{ 질문: '준비물을 혼자 챙기게 도와주고 싶은데 어떻게 할까요?', 답변: '첫 달은 부모님이 함께 챙기고, 이후엔 아이가 먼저 챙기게 한 뒤 최종 검토만 해주세요.', 카테고리: '자립' }],
             ChecklistStats: [],
             Records: []
         };
@@ -458,6 +403,168 @@
             </div>
         );
 
+        /* ══════════════════════════════════════════════
+           ★ 마음 온도계 ★
+        ══════════════════════════════════════════════ */
+        const MoodCheckScreen = ({ studentName, speakerOn, onDone }) => {
+            const [selected, setSelected] = useState(null);
+            const [reason, setReason] = useState('');
+
+            useEffect(() => {
+                if (speakerOn) speak(`${studentName} 어린이, 오늘 기분은 어떤가요?`);
+                return () => stopSpeak();
+            }, []);
+
+            const submit = () => {
+                if (selected === null) return;
+                sfx.click();
+                onDone({ emoji: MOODS[selected].emoji, label: MOODS[selected].label, reason: reason.trim() });
+            };
+
+            return (
+                <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-pink-50 via-yellow-50 to-blue-50 p-4 text-center overflow-y-auto custom-sc">
+                    <div className="pop w-full flex flex-col items-center gap-4 max-w-2xl">
+                        <Fairy mood="happy" cls="scale-90" />
+                        <h2 className="fs-2xl jua text-pink-900">🌡️ 오늘 마음 온도계</h2>
+                        <p className="fs-md jua text-pink-700">
+                            <HighlightedText text={`${studentName} 어린이, 오늘 기분은 어떤가요?`} speakerOn={speakerOn} autoPlay={true} />
+                        </p>
+
+                        <div className="grid grid-cols-5 gap-2 w-full">
+                            {MOODS.map((m, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => { sfx.click(); setSelected(i); }}
+                                    className={`mood-btn p-3 rounded-2xl bg-gradient-to-b ${m.color} border-4 ${selected === i ? 'border-pink-500 mood-btn-selected' : 'border-white'} btn-shadow flex flex-col items-center gap-1`}>
+                                    <span className="text-5xl">{m.emoji}</span>
+                                    <span className={`fs-xs jua ${m.textColor} leading-tight`}>{m.label}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        {selected !== null && (
+                            <div className="w-full pop flex flex-col gap-2 mt-2">
+                                <p className="fs-sm jua text-slate-600 text-left">💭 왜 그런 기분인가요? <span className="text-slate-400">(쓰지 않아도 돼요)</span></p>
+                                <textarea
+                                    value={reason}
+                                    onChange={e => setReason(e.target.value)}
+                                    placeholder="예) 친구랑 재밌게 놀았어요!"
+                                    rows="2"
+                                    className="w-full p-3 fs-md jua rounded-2xl border-3 border-pink-200 bg-white outline-none focus:border-pink-400 text-slate-700 resize-none"
+                                />
+                                <button onClick={submit} className="w-full py-4 bg-gradient-to-r from-pink-400 to-orange-400 text-white rounded-2xl jua fs-lg btn-shadow mt-2">
+                                    다음으로 가기 →
+                                </button>
+                            </div>
+                        )}
+
+                        {selected === null && (
+                            <p className="fs-sm jua text-slate-400 mt-2">위에서 오늘의 기분을 골라주세요</p>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        /* ══════════════════════════════════════════════
+           ★ 오늘의 명언 ★
+        ══════════════════════════════════════════════ */
+        const QuoteScreen = ({ quote, speakerOn, onDone }) => {
+            useEffect(() => {
+                if (speakerOn) speak(quote);
+                return () => stopSpeak();
+            }, [quote]);
+
+            return (
+                <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-purple-50 via-pink-50 to-amber-50 p-4 text-center overflow-y-auto custom-sc">
+                    <div className="pop w-full flex flex-col items-center gap-5 max-w-2xl">
+                        <div className="text-6xl wiggle">💌</div>
+                        <h2 className="fs-xl jua text-purple-900">오늘의 한마디</h2>
+                        <div className="bg-white border-4 border-purple-200 rounded-3xl p-6 w-full shadow-lg">
+                            <p className="fs-xl jua text-slate-800 leading-relaxed break-keep">
+                                <HighlightedText text={quote} speakerOn={speakerOn} autoPlay={true} />
+                            </p>
+                        </div>
+                        <button onClick={() => { sfx.click(); onDone(); }} className="w-full py-4 bg-gradient-to-r from-purple-400 to-pink-400 text-white rounded-2xl jua fs-lg btn-shadow">
+                            ✨ 다음으로 가기
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        /* ══════════════════════════════════════════════
+           ★ 스티커 획득 화면 ★
+        ══════════════════════════════════════════════ */
+        const StickerRewardScreen = ({ sticker, speakerOn, onDone }) => {
+            useEffect(() => {
+                sfx.complete();
+                if (speakerOn) speak(`와! ${sticker.name} 스티커를 받았어요!`);
+                return () => stopSpeak();
+            }, []);
+
+            return (
+                <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-yellow-100 via-pink-100 to-amber-100 p-4 text-center overflow-y-auto custom-sc relative">
+                    <StickerBurst stickers={['⭐','✨','🎉','💖','🌟']} />
+                    <div className="pop w-full flex flex-col items-center gap-4 max-w-2xl">
+                        <div className="text-3xl jua text-amber-900">🎁</div>
+                        <h2 className="fs-2xl jua text-amber-900">새 스티커를 받았어요!</h2>
+                        <div className="bg-white border-4 border-amber-300 rounded-full p-10 shadow-2xl sticker-in">
+                            <span className="text-9xl block">{sticker.emoji}</span>
+                        </div>
+                        <p className="fs-xl jua text-amber-800">{sticker.name}</p>
+                        <p className="fs-md jua text-amber-600">스티커 수집장에 모았어요!</p>
+                        <button onClick={() => { sfx.click(); onDone(); }} className="w-full py-4 mt-2 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-2xl jua fs-lg btn-shadow">
+                            ✨ 활동 마치기
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        /* ══════════════════════════════════════════════
+           ★ 스티커 수집장 보기 ★
+        ══════════════════════════════════════════════ */
+        const StickerCollectionPopup = ({ collected, onClose }) => {
+            const collectedSet = new Set(collected);
+            const total = STICKER_POOL.length;
+            const got = collectedSet.size;
+
+            return (
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-3 fade-up">
+                    <div className="bg-white rounded-3xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden">
+                        <div className="p-4 bg-gradient-to-r from-amber-100 to-pink-100 border-b border-amber-200 flex justify-between items-center">
+                            <h2 className="jua fs-md text-amber-900">🏅 내 스티커 수집장</h2>
+                            <button onClick={onClose} className="bg-white text-slate-500 hover:text-slate-700 px-3 py-1 rounded-full shadow-sm fs-sm jua">닫기</button>
+                        </div>
+                        <div className="p-4 bg-amber-50 text-center border-b border-amber-100">
+                            <p className="fs-md jua text-amber-700 mb-2">{got}<span className="fs-sm text-amber-500"> / {total}</span></p>
+                            <div className="w-full h-3 bg-white rounded-full overflow-hidden border border-amber-200">
+                                <div className="h-full bg-gradient-to-r from-amber-400 to-orange-400 transition-all duration-500" style={{width: `${(got/total)*100}%`}} />
+                            </div>
+                            {got === total && <p className="fs-md jua rainbow-text mt-2">🎉 모두 모았어요!</p>}
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-4 custom-sc">
+                            <div className="grid grid-cols-3 gap-3">
+                                {STICKER_POOL.map(s => {
+                                    const has = collectedSet.has(s.id);
+                                    return (
+                                        <div key={s.id} className={"aspect-square rounded-2xl flex flex-col items-center justify-center gap-1 border-2 transition-all " + (has ? 'bg-gradient-to-b from-yellow-50 to-amber-100 border-amber-300 shadow-sm' : 'bg-slate-50 border-slate-200')}>
+                                            <span className={"text-5xl " + (has ? '' : 'opacity-20 grayscale')}>{has ? s.emoji : '?'}</span>
+                                            <span className={"fs-xs jua " + (has ? 'text-amber-700' : 'text-slate-400')}>{has ? s.name : '아직'}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        /* ══════════════════════════════════════════════
+           ★ 디버그 패널 ★
+        ══════════════════════════════════════════════ */
         const DebugPanel = ({ onClose }) => {
             const [logs, setLogs] = useState([...debugLogs]);
             useEffect(() => {
@@ -465,14 +572,12 @@
                 debugListeners.push(fn);
                 return () => { const i = debugListeners.indexOf(fn); if (i >= 0) debugListeners.splice(i, 1); };
             }, []);
-
             const testGet = async () => { dbg('TEST', '🔍 GET 테스트'); await api.getData(); };
             const testPost = async () => {
                 dbg('TEST', '🔍 POST 테스트');
-                await api.post({ action: 'saveCumulativeRecord', record: { studentNumber: 'TEST', studentName: '테스트', type: '연결테스트', content: '디버그 테스트 ' + new Date().toLocaleString(), reflection: '' } });
+                await api.post({ action: 'saveStudentRecord', record: { studentNumber: 'TEST', studentName: '테스트', missionResult: '테스트', pledgeText: '디버그 테스트' } });
             };
-
-            const colorOf = (t) => ({ ERR: '#fca5a5', WARN: '#fdba74', GET: '#93c5fd', POST: '#c4b5fd', TEST: '#86efac', TTS: '#f9a8d4', MIC: '#fcd34d', MOCK: '#cbd5e1' }[t] || '#e2e8f0');
+            const colorOf = (t) => ({ ERR: '#fca5a5', WARN: '#fdba74', GET: '#93c5fd', POST: '#c4b5fd', TEST: '#86efac', TTS: '#f9a8d4', MIC: '#fcd34d', MOCK: '#cbd5e1', SAVE: '#fde047' }[t] || '#e2e8f0');
 
             return (
                 <div className="fixed inset-0 bg-slate-900/70 z-[300] flex items-center justify-center p-3">
@@ -499,9 +604,6 @@
                                 </div>
                             ))}
                         </div>
-                        <div className="p-2 bg-slate-100 text-[10px] text-slate-500 text-center break-all">
-                            GAS_URL: {GAS_URL ? GAS_URL.slice(0, 60) + '...' : '미설정'}
-                        </div>
                     </div>
                 </div>
             );
@@ -513,9 +615,7 @@
             const [res, setRes] = useState({});
             const [flash, setFlash] = useState(null);
             const [showSticker, setShowSticker] = useState(false);
-
             useEffect(() => () => stopSpeak(), []);
-
             const answer = (ans) => {
                 if (ans === 'good') {
                     sfx.correct();
@@ -529,13 +629,11 @@
                 setFlash(ans);
                 if (ans === 'good') setShowSticker(true);
                 setTimeout(() => {
-                    setFlash(null);
-                    setShowSticker(false);
+                    setFlash(null); setShowSticker(false);
                     if (idx < missions.length - 1) setIdx(idx + 1);
                     else onComplete(nr);
                 }, ans === 'good' ? 2000 : 1500);
             };
-
             return (
                 <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 to-pink-50 p-4 text-center relative overflow-hidden">
                     {showSticker && <StickerBurst onDone={() => {}} />}
@@ -545,18 +643,13 @@
                             <span className="bg-amber-200 px-3 rounded-full">{idx + 1} / {missions.length}</span>
                         </div>
                         <div className="w-full h-4 bg-white rounded-full overflow-hidden shadow-inner border-2 border-amber-200">
-                            <div className="h-full bg-gradient-to-r from-amber-400 to-orange-400 rounded-full transition-all duration-500"
-                                style={{ width: `${((idx) / missions.length) * 100}%` }} />
+                            <div className="h-full bg-gradient-to-r from-amber-400 to-orange-400 rounded-full transition-all duration-500" style={{ width: `${(idx / missions.length) * 100}%` }} />
                         </div>
                     </div>
                     <div key={idx} className="pop bg-white rounded-3xl shadow-xl border-4 border-amber-200 p-6 w-full max-w-2xl flex flex-col items-center gap-5">
                         <div className="text-6xl wiggle">📋</div>
                         <p className="fs-xl jua text-slate-800 leading-relaxed break-keep flex items-center justify-center text-center" style={{minHeight: '5rem'}}>
-                            <HighlightedText
-                                text={missions[idx].항목}
-                                speakerOn={speakerOn}
-                                autoPlay={true}
-                            />
+                            <HighlightedText text={missions[idx].항목} speakerOn={speakerOn} autoPlay={true} />
                         </p>
                         {flash === null ? (
                             <div className="flex gap-3 w-full">
@@ -573,7 +666,6 @@
                             <div className="text-9xl pop py-2">{flash === 'good' ? '🎉' : '💪'}</div>
                         )}
                     </div>
-                    <Fairy mood="happy" cls="mt-3 opacity-70 scale-90" />
                 </div>
             );
         };
@@ -592,9 +684,7 @@
             const [quiz] = useState(() => qs[Math.floor(Math.random() * qs.length)]);
             const [res, setRes] = useState(null);
             const [showSticker, setShowSticker] = useState(false);
-
             useEffect(() => () => stopSpeak(), []);
-
             const ans = (a) => {
                 const ok = a === quiz.a;
                 setRes(ok ? 'ok' : 'no');
@@ -609,7 +699,6 @@
                     setTimeout(() => setRes(null), 1800);
                 }
             };
-
             return (
                 <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-indigo-50 to-purple-50 p-4 text-center relative overflow-hidden">
                     {showSticker && <StickerBurst stickers={['🏆','⭐','🎉','💯','🌟','👏']} />}
@@ -621,12 +710,8 @@
                         </div>
                         {res === null ? (
                             <div className="flex gap-4 w-full">
-                                <button onClick={() => ans('O')} className="flex-1 py-8 fs-3xl jua text-indigo-700 bg-gradient-to-b from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200 border-4 border-indigo-300 rounded-3xl btn-shadow">
-                                    ⭕
-                                </button>
-                                <button onClick={() => ans('X')} className="flex-1 py-8 fs-3xl jua text-rose-500 bg-gradient-to-b from-rose-50 to-rose-100 hover:from-rose-100 hover:to-rose-200 border-4 border-rose-300 rounded-3xl btn-shadow">
-                                    ❌
-                                </button>
+                                <button onClick={() => ans('O')} className="flex-1 py-8 fs-3xl jua text-indigo-700 bg-gradient-to-b from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200 border-4 border-indigo-300 rounded-3xl btn-shadow">⭕</button>
+                                <button onClick={() => ans('X')} className="flex-1 py-8 fs-3xl jua text-rose-500 bg-gradient-to-b from-rose-50 to-rose-100 hover:from-rose-100 hover:to-rose-200 border-4 border-rose-300 rounded-3xl btn-shadow">❌</button>
                             </div>
                         ) : (
                             <div className={"w-full py-5 fs-lg jua rounded-2xl pop " + (res === 'ok' ? 'bg-green-100 text-green-800 border-4 border-green-300' : 'bg-orange-100 text-orange-800 border-4 border-orange-300')}>
@@ -634,20 +719,19 @@
                             </div>
                         )}
                     </div>
-                    <Fairy mood={res === 'no' ? 'sad' : 'happy'} cls="mt-3 opacity-70 scale-90" />
                 </div>
             );
         };
 
-        /* 녹음 + 텍스트 입력 + 실시간 음성→텍스트 변환 */
+        /* 녹음 + 텍스트 + STT */
         const RecordingScreen = ({ onDone, onSkip, providedStream, speakerOn }) => {
-            const [mode, setMode] = useState('choose'); // choose | voice | text
+            const [mode, setMode] = useState('choose');
             const [state, setState] = useState('idle');
             const [audioUrl, setAudioUrl] = useState(null);
             const [textInput, setTextInput] = useState('');
-            const [sttText, setSttText] = useState(''); // 실시간 변환 텍스트
-            const [sttFinal, setSttFinal] = useState(''); // 확정된 변환 텍스트
-            const [editableStt, setEditableStt] = useState(''); // 사용자가 수정 가능한 텍스트
+            const [sttText, setSttText] = useState('');
+            const [sttFinal, setSttFinal] = useState('');
+            const [editableStt, setEditableStt] = useState('');
             const mr = useRef(null);
             const chunks = useRef([]);
             const b64 = useRef(null);
@@ -657,9 +741,7 @@
                 if (speakerOn && mode === 'choose') speak('어떻게 다짐을 남길지 골라볼까요?');
                 return () => {
                     stopSpeak();
-                    if (recognitionRef.current) {
-                        try { recognitionRef.current.stop(); } catch(e) {}
-                    }
+                    if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch(e) {} }
                 };
             }, [mode]);
 
@@ -673,10 +755,7 @@
 
             const startSTT = () => {
                 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SR) {
-                    dbg('STT', '⚠️ SpeechRecognition 미지원 브라우저');
-                    return;
-                }
+                if (!SR) { dbg('STT', '미지원 브라우저'); return; }
                 try {
                     const r = new SR();
                     r.lang = 'ko-KR';
@@ -693,28 +772,16 @@
                         setSttFinal(finalText);
                         setSttText(finalText + interim);
                     };
-                    r.onerror = (e) => dbg('STT', 'STT 오류', e.error);
-                    r.onend = () => dbg('STT', 'STT 종료');
+                    r.onerror = (e) => dbg('STT', '오류', e.error);
                     r.start();
                     recognitionRef.current = r;
-                    dbg('STT', '✅ STT 시작 (한국어)');
-                } catch(e) {
-                    dbg('ERR', 'STT 시작 실패', e.toString());
-                }
+                } catch(e) { dbg('ERR', 'STT 시작 실패', e.toString()); }
             };
-
-            const stopSTT = () => {
-                if (recognitionRef.current) {
-                    try { recognitionRef.current.stop(); } catch(e) {}
-                    recognitionRef.current = null;
-                }
-            };
+            const stopSTT = () => { if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch(e) {} recognitionRef.current = null; } };
 
             const start = async () => {
                 sfx.click();
-                setSttText('');
-                setSttFinal('');
-                setEditableStt('');
+                setSttText(''); setSttFinal(''); setEditableStt('');
                 try {
                     const stream = providedStream || await navigator.mediaDevices.getUserMedia({ audio: true });
                     mr.current = new MediaRecorder(stream);
@@ -729,7 +796,7 @@
                     };
                     mr.current.start();
                     setState('rec');
-                    startSTT(); // 녹음과 동시에 STT 시작
+                    startSTT();
                 } catch (e) { alert("마이크를 사용할 수 없습니다."); }
             };
 
@@ -745,50 +812,42 @@
             };
 
             const submitText = () => {
-                if (!textInput.trim()) {
-                    alert('다짐을 입력해주세요!');
-                    return;
-                }
+                if (!textInput.trim()) { alert('다짐을 입력해주세요!'); return; }
                 sfx.click();
                 onDone(null, textInput.trim());
             };
 
             const submitVoice = () => {
                 sfx.click();
-                // editableStt가 우선, 없으면 sttFinal, 없으면 빈 문자열
                 const finalText = (editableStt || sttFinal || '').trim();
                 onDone(b64.current, finalText);
             };
 
-            // 모드 선택
             if (mode === 'choose') return (
                 <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100 p-4 text-center overflow-y-auto custom-sc">
                     <div className="pop w-full flex flex-col items-center gap-5 max-w-2xl">
                         <Fairy mood="happy" cls="scale-100" />
                         <h2 className="fs-2xl jua text-amber-900">✨ 다짐을 남겨요!</h2>
-                        <p className="fs-md ngo text-amber-700 px-4 leading-relaxed">
-                            어떻게 나의 다짐을 남길까요?<br/>마음에 드는 방법을 골라보세요!
+                        <p className="fs-md jua text-amber-700 px-4 leading-relaxed">
+                            <HighlightedText text="어떻게 나의 다짐을 남길까요? 마음에 드는 방법을 골라보세요!" speakerOn={speakerOn} autoPlay={true} />
                         </p>
                         <div className="flex gap-3 w-full max-w-xl">
                             <button onClick={() => { sfx.click(); setMode('voice'); }} className="flex-1 py-8 bg-gradient-to-b from-red-100 to-red-200 hover:from-red-200 hover:to-red-300 border-4 border-red-300 rounded-3xl btn-shadow flex flex-col items-center gap-2">
                                 <span className="text-7xl">🎤</span>
                                 <span className="jua fs-lg text-red-800">목소리로</span>
-                                <span className="ngo fs-sm text-red-700">녹음하기</span>
+                                <span className="jua fs-sm text-red-700">녹음하기</span>
                             </button>
                             <button onClick={() => { sfx.click(); setMode('text'); }} className="flex-1 py-8 bg-gradient-to-b from-blue-100 to-blue-200 hover:from-blue-200 hover:to-blue-300 border-4 border-blue-300 rounded-3xl btn-shadow flex flex-col items-center gap-2">
                                 <span className="text-7xl">⌨️</span>
                                 <span className="jua fs-lg text-blue-800">글자로</span>
-                                <span className="ngo fs-sm text-blue-700">써보기</span>
+                                <span className="jua fs-sm text-blue-700">써보기</span>
                             </button>
                         </div>
-                        <button onClick={() => { sfx.click(); onSkip(); }} className="py-3 px-6 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">
-                            건너뛰기
-                        </button>
+                        <button onClick={() => { sfx.click(); onSkip(); }} className="py-3 px-6 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">건너뛰기</button>
                     </div>
                 </div>
             );
 
-            // 텍스트 모드
             if (mode === 'text') return (
                 <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-cyan-100 p-4 text-center overflow-y-auto custom-sc">
                     <div className="pop w-full flex flex-col items-center gap-4 max-w-2xl">
@@ -808,18 +867,13 @@
                             className="w-full p-4 fs-lg jua rounded-2xl border-4 border-blue-200 bg-white outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none leading-relaxed"
                         />
                         <div className="flex gap-2 w-full">
-                            <button onClick={() => { sfx.click(); setMode('choose'); setTextInput(''); }} className="py-4 px-4 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">
-                                ← 뒤로
-                            </button>
-                            <button onClick={submitText} className="flex-1 py-4 bg-blue-500 hover:bg-blue-600 text-white fs-lg jua rounded-2xl btn-shadow flex items-center justify-center gap-2">
-                                💾 제출하기
-                            </button>
+                            <button onClick={() => { sfx.click(); setMode('choose'); setTextInput(''); }} className="py-4 px-4 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">← 뒤로</button>
+                            <button onClick={submitText} className="flex-1 py-4 bg-blue-500 hover:bg-blue-600 text-white fs-lg jua rounded-2xl btn-shadow">💾 제출하기</button>
                         </div>
                     </div>
                 </div>
             );
 
-            // 녹음 모드
             return (
                 <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100 p-4 text-center overflow-y-auto custom-sc">
                     <div className="pop w-full flex flex-col items-center gap-3 max-w-2xl">
@@ -860,25 +914,17 @@
 
                         {state === 'idle' && (
                             <div className="flex gap-2 w-full">
-                                <button onClick={() => { sfx.click(); setMode('choose'); }} className="py-5 px-4 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">
-                                    ←
-                                </button>
-                                <button onClick={start} className="flex-1 py-5 bg-red-500 hover:bg-red-600 text-white fs-lg jua rounded-2xl btn-shadow flex items-center justify-center gap-2">
-                                    🎤 녹음 시작
-                                </button>
+                                <button onClick={() => { sfx.click(); setMode('choose'); }} className="py-5 px-4 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">←</button>
+                                <button onClick={start} className="flex-1 py-5 bg-red-500 hover:bg-red-600 text-white fs-lg jua rounded-2xl btn-shadow">🎤 녹음 시작</button>
                             </div>
                         )}
                         {state === 'rec' && (
-                            <button onClick={stop} className="w-full py-5 text-white fs-xl jua rounded-2xl btn-shadow flex items-center justify-center gap-2 blink-red">
-                                ⏹ 녹음 완료
-                            </button>
+                            <button onClick={stop} className="w-full py-5 text-white fs-xl jua rounded-2xl btn-shadow blink-red">⏹ 녹음 완료</button>
                         )}
                         {state === 'done' && (
                             <div className="flex gap-2 w-full">
                                 <button onClick={start} className="flex-1 py-5 bg-white text-slate-600 jua rounded-2xl btn-shadow fs-md">🔁 다시 녹음</button>
-                                <button onClick={submitVoice} className="flex-1 py-5 bg-amber-500 hover:bg-amber-600 text-white fs-lg jua rounded-2xl btn-shadow flex items-center justify-center gap-2">
-                                    💾 제출하기
-                                </button>
+                                <button onClick={submitVoice} className="flex-1 py-5 bg-amber-500 hover:bg-amber-600 text-white fs-lg jua rounded-2xl btn-shadow">💾 제출하기</button>
                             </div>
                         )}
                     </div>
@@ -894,11 +940,8 @@
             const titles = ['text-pink-900', 'text-blue-900', 'text-green-900', 'text-orange-900', 'text-purple-900'];
             const btns = ['bg-pink-500 hover:bg-pink-600', 'bg-blue-500 hover:bg-blue-600', 'bg-green-500 hover:bg-green-600', 'bg-orange-500 hover:bg-orange-600', 'bg-purple-500 hover:bg-purple-600'];
             const borders = ['border-pink-300', 'border-blue-300', 'border-green-300', 'border-orange-300', 'border-purple-300'];
-
             const cb = bgs[idx % 5], ct = titles[idx % 5], cn = btns[idx % 5], cbd = borders[idx % 5];
-
             useEffect(() => () => stopSpeak(), []);
-
             const ans = async () => {
                 sfx.click();
                 if (idx < questions.length - 1) { setIdx(idx + 1); return; }
@@ -908,7 +951,6 @@
                 setSaving(false);
                 onComplete();
             };
-
             return (
                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3">
                     <div className={`bg-white w-full rounded-3xl overflow-hidden shadow-2xl pop transition-colors duration-500 max-w-lg border-4 ${cbd}`}>
@@ -933,47 +975,45 @@
             );
         };
 
-        /* MAIN APP */
+        /* ══════════════════════════════════════════════
+           ★ MAIN APP ★
+        ══════════════════════════════════════════════ */
         function App() {
             const [loading, setLoading] = useState(true);
             const [appData, setAppData] = useState(null);
             const [user, setUser] = useState(null);
             const [tab, setTab] = useState('student');
 
+            // 활동 진행 단계: mood → quote → mission → quiz → recording → sticker → done
+            const [stage, setStage] = useState('mood');
+            const [moodData, setMoodData] = useState(null);
+            const [todayQuote, setTodayQuote] = useState('');
             const [missions, setMissions] = useState([]);
             const [missionsResult, setMissionsResult] = useState(null);
-            const [quizDone, setQuizDone] = useState(false);
-            const [showMission, setShowMission] = useState(false);
-            const [showQuiz, setShowQuiz] = useState(false);
-            const [showRec, setShowRec] = useState(false);
-            const [studentSaved, setStudentSaved] = useState(false);
             const [textPledge, setTextPledge] = useState('');
             const [audioPledge, setAudioPledge] = useState(null);
-            const [recordId, setRecordId] = useState(null); // 학생 저장 후 받은 레코드 ID
-            const [studentSaveResult, setStudentSaveResult] = useState(null); // 'success' | 'partial' | 'fail'
+            const [earnedSticker, setEarnedSticker] = useState(null);
+            const [collectedStickers, setCollectedStickers] = useState([]); // 학번별 누적 (시트에서 읽음)
 
+            const [recordId, setRecordId] = useState(null);
             const [parentSup, setParentSup] = useState('');
             const [parentNote, setParentNote] = useState('');
             const [isSaving, setIsSaving] = useState(false);
-
             const [showChecklist, setShowChecklist] = useState(false);
             const [micChecked, setMicChecked] = useState(false);
             const [micStream, setMicStream] = useState(null);
             const [tips, setTips] = useState([]);
-            const [done, setDone] = useState(false);
             const [parentSubmitted, setParentSubmitted] = useState(false);
 
-            const [speakerOn, setSpeakerOn] = useState(false); // 기본 OFF
+            const [speakerOn, setSpeakerOn] = useState(false);
             const [showDebug, setShowDebug] = useState(false);
+            const [showCollection, setShowCollection] = useState(false);
             const [activePopup, setActivePopup] = useState(null);
             const [bigSticker, setBigSticker] = useState(false);
 
             useEffect(() => {
                 if ('speechSynthesis' in window) {
-                    const load = () => {
-                        const v = window.speechSynthesis.getVoices();
-                        if (v.length) dbg('TTS', `음성 ${v.length}개 로드됨`);
-                    };
+                    const load = () => { window.speechSynthesis.getVoices(); };
                     load();
                     window.speechSynthesis.onvoiceschanged = load;
                 }
@@ -984,6 +1024,15 @@
                 setMissions([...all].sort(() => 0.5 - Math.random()).slice(0, 3));
             };
 
+            const pickTodayQuote = () => {
+                // 날짜 기반 → 같은 날 같은 명언
+                const dayKey = new Date().toDateString();
+                let hash = 0;
+                for (let i = 0; i < dayKey.length; i++) hash = ((hash << 5) - hash) + dayKey.charCodeAt(i);
+                const idx = Math.abs(hash) % QUOTES.length;
+                return QUOTES[idx];
+            };
+
             useEffect(() => {
                 const load = async () => {
                     let data = null;
@@ -991,7 +1040,6 @@
                     if (!data) {
                         await new Promise(r => setTimeout(r, 600));
                         data = MOCK;
-                        dbg('WARN', 'MOCK 데이터로 진행');
                     }
                     setAppData(data);
                     if (data.Education && data.Education.length) {
@@ -999,6 +1047,7 @@
                         setTips(s.slice(0, 1));
                     }
                     pickMissions(data);
+                    setTodayQuote(pickTodayQuote());
                     setLoading(false);
                 };
                 load();
@@ -1006,13 +1055,9 @@
 
             const toggleSpeaker = () => {
                 if (speakerOn) {
-                    setSpeakerEnabled(false);
-                    sfx.click(); // 끄기 직전엔 OFF라 어차피 안 들림
-                    stopSpeak();
-                    setSpeakerOn(false);
+                    setSpeakerEnabled(false); stopSpeak(); setSpeakerOn(false);
                 } else {
-                    setSpeakerEnabled(true);
-                    setSpeakerOn(true);
+                    setSpeakerEnabled(true); setSpeakerOn(true);
                     sfx.click();
                     setTimeout(() => speak('스피커를 켰어요. 이제 문제를 읽어줄게요!'), 200);
                 }
@@ -1023,93 +1068,89 @@
                 try {
                     const s = await navigator.mediaDevices.getUserMedia({ audio: true });
                     setMicStream(s);
-                    dbg('MIC', '권한 허용됨');
-                } catch (e) {
-                    dbg('MIC', '권한 거부 또는 불가', e.toString());
-                }
+                } catch (e) {}
                 setMicChecked(true);
             };
-            const skipMic = () => {
-                sfx.click();
-                setMicChecked(true);
-                dbg('MIC', '건너뛰기');
-            };
+            const skipMic = () => { sfx.click(); setMicChecked(true); };
 
             const selectUser = (u) => {
                 setUser(u);
                 sfx.click();
                 if (speakerOn) speak(`${u.이름} 어린이, 환영해요!`);
+                
+                // 해당 학생의 누적 스티커 계산
+                const recs = (appData.Records || []).filter(r => String(r.학번) === String(u.학번));
+                const stickerIds = recs
+                    .map(r => r.획득스티커)
+                    .filter(s => s)
+                    .map(s => parseInt(String(s).match(/\d+/)?.[0]))
+                    .filter(n => !isNaN(n));
+                setCollectedStickers([...new Set(stickerIds)]);
+
                 const ok = (appData.ChecklistStats || []).find(s => String(s.학번) === String(u.학번) && s.완료여부 === '완료');
                 if (!ok) setShowChecklist(true);
+                setStage('mood'); // 첫 단계로
             };
 
-            // 🎤 학생 다짐 완료 시 즉시 저장 (부모 안 기다림)
-            const saveStudentNow = async (audioB64, txt, missionRes) => {
+            // 활동 완료 시 시트 즉시 저장 + 스티커 부여
+            const saveStudentNow = async (audioB64, txt, missionRes, mood, quote) => {
                 if (!user) return;
-                dbg('SAVE', '🚀 학생 즉시 저장 시작', { hasAudio: !!audioB64, hasText: !!txt });
+
+                // 랜덤 스티커 부여 (이미 가진 건 제외)
+                const remaining = STICKER_POOL.filter(s => !collectedStickers.includes(s.id));
+                const sticker = remaining.length > 0 
+                    ? remaining[Math.floor(Math.random() * remaining.length)]
+                    : STICKER_POOL[Math.floor(Math.random() * STICKER_POOL.length)]; // 다 모았으면 랜덤
+                setEarnedSticker(sticker);
+                setCollectedStickers([...collectedStickers, sticker.id]);
 
                 const missionResult = missionRes
                     ? missions.map((m, i) => `${m.항목}: ${missionRes[i] === 'good' ? '😃 잘했어요' : '☹️ 아쉬워요'}`).join('\n')
                     : '';
                 let audioUrl = '';
-                let saveStatus = 'success';
 
                 if (GAS_URL) {
                     if (audioB64) {
-                        dbg('SAVE', '🎤 오디오 업로드 시작', { sizeKB: Math.round(audioB64.length / 1024) });
                         const ar = await api.post({ action: 'uploadAudioToDrive', base64Data: audioB64, filename: `${user.학번}_${user.이름}_${Date.now()}.webm` });
-                        if (ar && ar.success) {
-                            audioUrl = ar.fileUrl;
-                            dbg('SAVE', '✅ 오디오 업로드 성공', audioUrl);
-                        } else {
-                            dbg('ERR', '❌ 오디오 업로드 실패', ar);
-                            saveStatus = 'partial'; // 텍스트는 저장되지만 오디오 실패
-                        }
+                        if (ar && ar.success) audioUrl = ar.fileUrl;
+                        else dbg('ERR', '오디오 업로드 실패', ar);
                     }
-
                     const record = {
                         studentNumber: user.학번,
                         studentName: user.이름,
+                        moodEmoji: mood ? mood.emoji + ' ' + mood.label : '',
+                        moodReason: mood ? mood.reason : '',
                         missionResult,
+                        todayQuote: quote || '',
+                        sticker: `${sticker.id}. ${sticker.emoji} ${sticker.name}`,
                         pledgeText: txt || '',
                         audioUrl,
                     };
                     const sr = await api.post({ action: 'saveStudentRecord', record });
-                    if (sr && sr.success) {
-                        setRecordId(sr.recordId);
-                        dbg('SAVE', '✅ 학생 기록 저장 성공', sr);
-                    } else {
-                        dbg('ERR', '❌ 학생 기록 저장 실패', sr);
-                        saveStatus = 'fail';
-                    }
-                } else {
-                    dbg('MOCK', '학생 저장 시뮬레이션');
-                    setRecordId('MOCK_' + Date.now());
+                    if (sr && sr.success) { setRecordId(sr.recordId); sfx.complete(); }
                 }
-
-                setStudentSaveResult(saveStatus);
-                if (saveStatus !== 'fail') sfx.complete();
             };
 
             const resetAll = () => {
-                sfx.click();
-                stopSpeak();
-                setDone(false); setUser(null); setMissionsResult(null); setQuizDone(false);
-                setShowMission(false); setShowQuiz(false); setShowRec(false); setStudentSaved(false);
+                sfx.click(); stopSpeak();
+                setUser(null); setMissionsResult(null); setMoodData(null);
+                setTextPledge(''); setAudioPledge(null); setEarnedSticker(null);
+                setStage('mood');
                 setParentSup(''); setParentNote(''); setTab('student'); setParentSubmitted(false);
-                if (appData) pickMissions(appData);
+                setRecordId(null);
+                if (appData) { pickMissions(appData); setTodayQuote(pickTodayQuote()); }
             };
 
-            const renderPopup = () => {
+            const renderInfoPopup = () => {
                 if (!activePopup) return null;
                 const close = () => { sfx.click(); setActivePopup(null); stopSpeak(); };
 
                 if (activePopup === 'tips30') return (
                     <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-3 fade-up">
-                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
-                            <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-indigo-100 flex justify-between items-center">
+                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
+                            <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b flex justify-between items-center">
                                 <h2 className="jua fs-md text-indigo-900">🏫 초등학교 생활 꿀팁 30선</h2>
-                                <button onClick={close} className="bg-white text-slate-500 hover:text-slate-700 px-3 py-1 rounded-full shadow-sm fs-sm jua">닫기</button>
+                                <button onClick={close} className="bg-white text-slate-500 px-3 py-1 rounded-full shadow-sm fs-sm jua">닫기</button>
                             </div>
                             <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-sc">
                                 {appData.Transition.map((q, i) => (
@@ -1121,7 +1162,7 @@
                                         {q.답변 && (
                                             <div className="flex gap-2 items-start ml-2 mt-2 pt-2 border-t border-slate-100">
                                                 <span className="text-amber-500 jua fs-md shrink-0">A.</span>
-                                                <span className="ngo text-slate-700 fs-sm leading-relaxed">{q.답변}</span>
+                                                <span className="jua text-slate-700 fs-sm leading-relaxed">{q.답변}</span>
                                             </div>
                                         )}
                                     </div>
@@ -1133,16 +1174,16 @@
 
                 if (activePopup === 'eduTips') return (
                     <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-3 fade-up">
-                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
-                            <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-b border-blue-100 flex justify-between items-center">
+                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
+                            <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-b flex justify-between items-center">
                                 <h2 className="jua fs-md text-blue-900">💡 오늘의 가정 연계 교육 팁</h2>
-                                <button onClick={close} className="bg-white text-slate-500 hover:text-slate-700 px-3 py-1 rounded-full shadow-sm fs-sm jua">닫기</button>
+                                <button onClick={close} className="bg-white text-slate-500 px-3 py-1 rounded-full shadow-sm fs-sm jua">닫기</button>
                             </div>
                             <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-sc">
                                 {tips.map((t, i) => (
                                     <div key={i} className="border-l-4 border-blue-400 pl-4 py-2">
                                         <h4 className="jua text-blue-900 mb-2 fs-md">{t.제목}</h4>
-                                        <p className="ngo fs-md text-slate-700 leading-relaxed bg-blue-50 p-3 rounded-xl">{t.내용}</p>
+                                        <p className="jua fs-md text-slate-700 leading-relaxed bg-blue-50 p-3 rounded-xl">{t.내용}</p>
                                     </div>
                                 ))}
                             </div>
@@ -1156,16 +1197,11 @@
                             <div className="p-5 bg-gradient-to-b from-emerald-50 to-green-100 flex flex-col items-center gap-2">
                                 <span className="text-5xl mb-1 bob">🌱</span>
                                 <h2 className="jua fs-lg text-emerald-900">유초이음 사이트</h2>
-                                <p className="ngo text-emerald-700 fs-sm">입학을 앞둔 우리 아이들을 위한<br/>다양한 정보가 가득해요!</p>
+                                <p className="jua text-emerald-700 fs-sm">입학을 앞둔 우리 아이들을 위한<br/>다양한 정보가 가득해요!</p>
                             </div>
                             <div className="p-5 flex flex-col gap-2">
-                                <a href="https://www.parents.go.kr/usr/wap/list.do?app=10210&listType=thumb&ctgryCodeSearch=1&nttSjSearchOr=&searchField=&searchText=" target="_blank" rel="noopener noreferrer" onClick={() => sfx.click()}
-                                    className="py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl jua fs-md w-full transition-colors btn-shadow">
-                                    새 창으로 이동 →
-                                </a>
-                                <button onClick={close} className="py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl jua fs-sm w-full">
-                                    닫기
-                                </button>
+                                <a href="https://www.parents.go.kr/usr/wap/list.do?app=10210&listType=thumb&ctgryCodeSearch=1&nttSjSearchOr=&searchField=&searchText=" target="_blank" rel="noopener noreferrer" onClick={() => sfx.click()} className="py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl jua fs-md w-full btn-shadow">새 창으로 이동 →</a>
+                                <button onClick={close} className="py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl jua fs-sm w-full">닫기</button>
                             </div>
                         </div>
                     </div>
@@ -1173,6 +1209,7 @@
                 return null;
             };
 
+            // 로딩
             if (loading) return <div className="app-frame"><Spinner text="데이터 불러오는 중..." /></div>;
             if (isSaving) return <div className="app-frame"><Spinner text="기록 저장 중..." /></div>;
 
@@ -1182,18 +1219,14 @@
                     <div className="h-full w-full flex flex-col items-center justify-center p-5 text-center bg-gradient-to-b from-blue-50 to-blue-100 overflow-y-auto custom-sc">
                         <Fairy mood="happy" cls="mb-3 scale-110" />
                         <h1 className="fs-2xl jua text-blue-900 mb-3">🎤 마이크 준비하기</h1>
-                        <p className="fs-md ngo text-blue-700 mb-6 leading-relaxed px-4 max-w-md">
+                        <p className="fs-md jua text-blue-700 mb-6 leading-relaxed px-4 max-w-md">
                             내 목소리로 다짐을 남기기 위해<br />마이크가 필요해요!
                         </p>
                         <div className="w-full max-w-md flex flex-col gap-3">
-                            <button onClick={requestMic} className="w-full py-5 fs-lg bg-blue-500 hover:bg-blue-600 text-white rounded-2xl jua btn-shadow flex items-center justify-center gap-2">
-                                🎤 허용하고 시작하기
-                            </button>
-                            <button onClick={skipMic} className="w-full py-4 fs-md bg-white text-slate-500 rounded-2xl ngo border-2 border-slate-200">
-                                마이크 없이 계속하기
-                            </button>
+                            <button onClick={requestMic} className="w-full py-5 fs-lg bg-blue-500 hover:bg-blue-600 text-white rounded-2xl jua btn-shadow">🎤 허용하고 시작하기</button>
+                            <button onClick={skipMic} className="w-full py-4 fs-md bg-white text-slate-500 rounded-2xl jua border-2 border-slate-200">마이크 없이 계속하기</button>
                         </div>
-                        <p className="fs-sm text-slate-500 mt-4 break-keep px-4 ngo">마이크 없어도 체크리스트·퀴즈는 이용할 수 있어요!</p>
+                        <p className="fs-sm text-slate-500 mt-4 break-keep px-4 jua">마이크 없어도 체크리스트·퀴즈는 이용할 수 있어요!</p>
                     </div>
                 </div>
             );
@@ -1204,16 +1237,11 @@
                     <div className="h-full w-full flex flex-col items-center justify-center p-5 bg-gradient-to-b from-amber-50 via-pink-50 to-amber-100 overflow-y-auto custom-sc">
                         <Fairy mood="happy" cls="mb-3 scale-110" />
                         <h1 className="fs-2xl jua text-amber-800 mb-2 text-center">유초이음 적응 앱</h1>
-                        <p className="ngo text-amber-600 fs-md mb-6">🌟 오늘도 한 뼘 자라는 우리 🌟</p>
-                        {!GAS_URL && (
-                            <div className="mb-4 bg-orange-50 border-2 border-orange-200 rounded-2xl px-4 py-2 fs-sm text-orange-700 jua text-center max-w-sm">
-                                ⚠️ 샘플 모드
-                            </div>
-                        )}
+                        <p className="jua text-amber-600 fs-md mb-6">🌟 3주간 한 뼘 자라는 우리 🌟</p>
                         <div className="w-full max-w-md bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-xl border-4 border-amber-200">
                             <p className="text-center fs-md text-slate-600 jua mb-4">👋 누가 접속했나요?</p>
                             <select
-                                className="w-full p-4 rounded-2xl border-amber-300 bg-amber-50 jua text-slate-700 fs-lg outline-none focus:border-amber-500 transition-colors cursor-pointer"
+                                className="w-full p-4 rounded-2xl border-amber-300 bg-amber-50 jua text-slate-700 fs-lg outline-none focus:border-amber-500 cursor-pointer"
                                 style={{borderWidth: '3px'}}
                                 defaultValue=""
                                 onChange={e => {
@@ -1225,13 +1253,9 @@
                                     <option key={s.학번} value={s.학번}>{i + 1}번 {s.이름}</option>
                                 ))}
                             </select>
-                            <p className="text-center text-slate-400 fs-sm mt-3 ngo">번호를 눌러 친구를 찾아보세요</p>
+                            <p className="text-center text-slate-400 fs-sm mt-3 jua">번호를 눌러 친구를 찾아보세요</p>
                         </div>
-
-                        <button onClick={() => { sfx.click(); setShowDebug(true); }}
-                            className="mt-4 fs-sm text-slate-400 underline opacity-60 ngo">
-                            🛠 연결 진단
-                        </button>
+                        <button onClick={() => { sfx.click(); setShowDebug(true); }} className="mt-4 fs-sm text-slate-400 underline opacity-60 jua">🛠 연결 진단</button>
                     </div>
                     {showDebug && <DebugPanel onClose={() => setShowDebug(false)} />}
                 </div>
@@ -1247,74 +1271,89 @@
                 </div>
             );
 
-            if (showMission) return <div className="app-frame"><MissionPopup missions={missions} speakerOn={speakerOn} onComplete={r => { setMissionsResult(r); setShowMission(false); setShowQuiz(true); }} /></div>;
-            if (showQuiz) return <div className="app-frame"><QuizPopup speakerOn={speakerOn} onComplete={() => { setShowQuiz(false); setQuizDone(true); setShowRec(true); }} /></div>;
-            if (showRec) return <div className="app-frame"><RecordingScreen providedStream={micStream} speakerOn={speakerOn} onDone={(audioB64, txt) => { setAudioPledge(audioB64); setTextPledge(txt || ''); setShowRec(false); setStudentSaved(true); setIsSaving(true); saveStudentNow(audioB64, txt, missionsResult).finally(() => setIsSaving(false)); }} onSkip={() => { setShowRec(false); setStudentSaved(true); setIsSaving(true); saveStudentNow(null, null, missionsResult).finally(() => setIsSaving(false)); }} /></div>;
-
-            if (done) return (
+            // 활동 단계 분기
+            if (stage === 'mood') return (
                 <div className="app-frame">
-                    <div className="h-full w-full flex flex-col items-center justify-center p-5 text-center bg-gradient-to-b from-green-50 via-yellow-50 to-green-100 overflow-y-auto custom-sc relative">
-                        <StickerBurst stickers={['🏆','⭐','🌟','💖','🎉','🌈','✨','👏']} />
-                        <Fairy mood="happy" cls="mb-2 scale-125" />
-                        <div className="text-7xl mb-2 bob">🏅</div>
-                        <h1 className="fs-2xl jua rainbow-text mb-3">오늘의 기록 완성!</h1>
-                        <div className="bg-white/90 p-5 rounded-3xl shadow-md mb-4 w-full max-w-lg border-4 border-green-200">
-                            <p className="jua text-green-700 fs-lg mb-3">
-                                <span className="text-green-500 fs-2xl jua">{user.이름}</span> 어린이, 참 잘했어요! 👍<br />
-                                <span className="fs-md ngo text-green-600 block mt-1">멋진 초등학생이 될 준비가 되었네요. 🌱</span>
-                            </p>
-                            {missionsResult && (
-                                <div className="space-y-2">
-                                    {missions.map((m, i) => (
-                                        <div key={i} className="flex items-center justify-between bg-green-50 rounded-xl px-3 py-2">
-                                            <span className="fs-sm ngo text-slate-700 text-left">{m.항목}</span>
-                                            <span className="text-3xl">{missionsResult[i] === 'good' ? '😃' : '☹️'}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                        <button onClick={resetAll} className="py-4 px-8 fs-lg bg-green-500 hover:bg-green-600 text-white rounded-2xl jua btn-shadow">
-                            🔁 처음 화면으로
-                        </button>
-                    </div>
+                    <MoodCheckScreen studentName={user.이름} speakerOn={speakerOn} onDone={(m) => { setMoodData(m); setStage('quote'); }} />
                 </div>
             );
 
-            const studentDone = missionsResult !== null && quizDone && studentSaved;
+            if (stage === 'quote') return (
+                <div className="app-frame">
+                    <QuoteScreen quote={todayQuote} speakerOn={speakerOn} onDone={() => setStage('mission')} />
+                </div>
+            );
 
-            return (
+            if (stage === 'mission') return (
+                <div className="app-frame">
+                    <MissionPopup missions={missions} speakerOn={speakerOn} onComplete={r => { setMissionsResult(r); setStage('quiz'); }} />
+                </div>
+            );
+
+            if (stage === 'quiz') return (
+                <div className="app-frame">
+                    <QuizPopup speakerOn={speakerOn} onComplete={() => setStage('recording')} />
+                </div>
+            );
+
+            if (stage === 'recording') return (
+                <div className="app-frame">
+                    <RecordingScreen
+                        providedStream={micStream}
+                        speakerOn={speakerOn}
+                        onDone={async (audioB64, txt) => {
+                            setAudioPledge(audioB64); setTextPledge(txt || '');
+                            setIsSaving(true);
+                            await saveStudentNow(audioB64, txt, missionsResult, moodData, todayQuote);
+                            setIsSaving(false);
+                            setStage('sticker');
+                        }}
+                        onSkip={async () => {
+                            setIsSaving(true);
+                            await saveStudentNow(null, '', missionsResult, moodData, todayQuote);
+                            setIsSaving(false);
+                            setStage('sticker');
+                        }}
+                    />
+                </div>
+            );
+
+            if (stage === 'sticker' && earnedSticker) return (
+                <div className="app-frame">
+                    <StickerRewardScreen sticker={earnedSticker} speakerOn={speakerOn} onDone={() => setStage('done')} />
+                </div>
+            );
+
+            if (stage === 'done') return (
                 <div className="app-frame">
                     {bigSticker && <StickerBurst stickers={['🎉','✨','💖','🌟','👍','🏆']} />}
-                    {renderPopup()}
-                    {showDebug && <DebugPanel onClose={() => setShowDebug(false)} />}
+                    {renderInfoPopup()}
+                    {showCollection && <StickerCollectionPopup collected={collectedStickers} onClose={() => { sfx.click(); setShowCollection(false); }} />}
 
-                    {/* 헤더 */}
                     <header className="bg-white px-3 py-2 flex items-center justify-between shadow-sm flex-shrink-0 border-b-2 border-amber-100">
                         <div className="flex items-center gap-1">
                             <Fairy cls="scale-50 -ml-3 -my-5 shrink-0" />
                             <h1 className="fs-md jua text-amber-800 -ml-1">유초이음</h1>
                         </div>
                         <div className="flex items-center gap-2">
-                            <button onClick={toggleSpeaker} className={"w-11 h-11 rounded-full jua text-xl transition-all flex items-center justify-center " + (speakerOn ? 'bg-blue-100 text-blue-600 speaker-on-glow' : 'bg-slate-100 text-slate-400')}
-                                title={speakerOn ? '스피커 끄기' : '스피커 켜기'}>
+                            <button onClick={() => { sfx.click(); setShowCollection(true); }} className="px-3 h-10 rounded-full bg-amber-100 text-amber-800 jua fs-sm flex items-center gap-1">
+                                🏅 {collectedStickers.length}/15
+                            </button>
+                            <button onClick={toggleSpeaker} className={"w-10 h-10 rounded-full jua text-xl transition-all flex items-center justify-center " + (speakerOn ? 'bg-blue-100 text-blue-600 speaker-on-glow' : 'bg-slate-100 text-slate-400')}>
                                 {speakerOn ? '🔊' : '🔇'}
                             </button>
-                            <div className="fs-sm jua bg-amber-100 text-amber-800 px-3 py-1 rounded-full whitespace-nowrap">
+                            <div className="fs-sm jua bg-amber-100 text-amber-800 px-3 py-1 rounded-full">
                                 {user.이름}
                             </div>
-                            <button onClick={() => { sfx.click(); setShowDebug(true); }}
-                                className="w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 text-base flex items-center justify-center transition-colors"
-                                title="연결 진단 (디버그)">🛠</button>
+                            <button onClick={() => { sfx.click(); setShowDebug(true); }} className="w-10 h-10 rounded-full bg-slate-200 text-slate-600 text-base flex items-center justify-center">🛠</button>
                         </div>
                     </header>
 
-                    {/* 탭 */}
                     <div className="flex px-3 pt-2 pb-2 gap-2 bg-slate-50 flex-shrink-0">
-                        <button onClick={() => { sfx.click(); setTab('student'); }} className={"flex-1 py-3 rounded-xl jua fs-md transition-colors flex items-center justify-center gap-1 " + (tab === 'student' ? 'bg-amber-400 text-amber-900 shadow-md' : 'bg-white text-slate-400')}>
+                        <button onClick={() => { sfx.click(); setTab('student'); }} className={"flex-1 py-3 rounded-xl jua fs-md flex items-center justify-center gap-1 " + (tab === 'student' ? 'bg-amber-400 text-amber-900 shadow-md' : 'bg-white text-slate-400')}>
                             😊 아이 활동
                         </button>
-                        <button onClick={() => { sfx.click(); setTab('parent'); }} className={"flex-1 py-3 rounded-xl jua fs-md transition-colors flex items-center justify-center gap-1 " + (tab === 'parent' ? 'bg-blue-400 text-blue-900 shadow-md' : 'bg-white text-slate-400')}>
+                        <button onClick={() => { sfx.click(); setTab('parent'); }} className={"flex-1 py-3 rounded-xl jua fs-md flex items-center justify-center gap-1 " + (tab === 'parent' ? 'bg-blue-400 text-blue-900 shadow-md' : 'bg-white text-slate-400')}>
                             👨‍👩‍👧 학부모님
                         </button>
                     </div>
@@ -1322,118 +1361,101 @@
                     <div className="flex-1 overflow-y-auto custom-sc p-3">
                         {tab === 'student' && (
                             <div className="fade-up flex flex-col gap-3 max-w-2xl mx-auto w-full">
-                                <div className="bg-white p-5 rounded-3xl shadow-sm border-4 border-amber-100 text-center">
-                                    <div className="text-5xl mb-2 wiggle inline-block">🌟</div>
-                                    <h2 className="jua fs-xl text-slate-800 mb-1">오늘의 성장 미션</h2>
-                                    <p className="fs-sm ngo text-slate-500 mb-4">아이와 함께 미션을 수행해 보세요!</p>
-                                    <div className="grid grid-cols-3 gap-2 mb-4">
-                                        <div className={"p-3 rounded-2xl border-2 transition-all " + (missionsResult ? 'bg-green-50 border-green-300 scale-105' : 'bg-slate-50 border-slate-100')}>
-                                            <div className="text-4xl mb-1">📋</div>
-                                            <div className={"fs-sm jua " + (missionsResult ? 'text-green-700' : 'text-slate-400')}>{missionsResult ? '✓ 미션' : '미션'}</div>
+                                <div className="bg-gradient-to-b from-green-50 to-yellow-50 p-5 rounded-3xl border-4 border-green-200 text-center">
+                                    <div className="text-7xl mb-2 bob inline-block">🏆</div>
+                                    <h2 className="fs-2xl jua rainbow-text mb-2">오늘의 활동 완료!</h2>
+                                    <p className="jua fs-lg text-green-700 mb-2">
+                                        <span className="text-green-500 fs-2xl jua">{user.이름}</span> 어린이, 참 잘했어요! 👍
+                                    </p>
+                                    {moodData && (
+                                        <div className="bg-white rounded-2xl p-3 mb-2 inline-flex items-center gap-2">
+                                            <span className="text-3xl">{moodData.emoji}</span>
+                                            <span className="jua fs-md text-slate-700">{moodData.label}</span>
                                         </div>
-                                        <div className={"p-3 rounded-2xl border-2 transition-all " + (quizDone ? 'bg-green-50 border-green-300 scale-105' : 'bg-slate-50 border-slate-100')}>
-                                            <div className="text-4xl mb-1">💡</div>
-                                            <div className={"fs-sm jua " + (quizDone ? 'text-green-700' : 'text-slate-400')}>{quizDone ? '✓ 퀴즈' : '퀴즈'}</div>
-                                        </div>
-                                        <div className={"p-3 rounded-2xl border-2 transition-all " + (studentSaved ? 'bg-green-50 border-green-300 scale-105' : 'bg-slate-50 border-slate-100')}>
-                                            <div className="text-4xl mb-1">🎤</div>
-                                            <div className={"fs-sm jua " + (studentSaved ? 'text-green-700' : 'text-slate-400')}>{studentSaved ? '✓ 다짐' : '다짐'}</div>
-                                        </div>
-                                    </div>
-                                    {!studentDone && (
-                                        <button onClick={() => { sfx.click(); setShowMission(true); }} className="w-full py-4 bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white rounded-2xl jua fs-lg btn-shadow">
-                                            🚀 활동 시작하기
-                                        </button>
                                     )}
-                                    {studentDone && (
-                                        <div className="py-4 bg-green-100 text-green-800 rounded-2xl jua fs-lg border-2 border-green-200">
-                                            ✅ 아이 활동 완료!
+                                    {earnedSticker && (
+                                        <div className="bg-white rounded-2xl p-3 mb-3">
+                                            <p className="jua fs-sm text-amber-700 mb-1">오늘 받은 스티커</p>
+                                            <span className="text-5xl">{earnedSticker.emoji}</span>
+                                            <p className="jua fs-md text-amber-800">{earnedSticker.name}</p>
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="bg-white p-4 rounded-2xl border-2 border-blue-100 flex items-center gap-3">
-                                    <div className="text-4xl">💡</div>
+                                <button onClick={() => { sfx.click(); setShowCollection(true); }} className="bg-gradient-to-r from-amber-100 to-pink-100 p-4 rounded-2xl border-2 border-amber-200 flex items-center gap-3 btn-shadow active:scale-95">
+                                    <div className="text-4xl">🏅</div>
                                     <div className="text-left flex-1">
-                                        <p className="jua fs-md text-blue-800">스피커를 켜면 문제를 읽어줘요!</p>
-                                        <p className="ngo fs-sm text-blue-600">우측 상단 🔇 버튼을 눌러보세요</p>
+                                        <p className="jua fs-md text-amber-900">내 스티커 수집장 보기</p>
+                                        <p className="jua fs-sm text-amber-600">{collectedStickers.length} / 15 개 모았어요!</p>
                                     </div>
-                                </div>
+                                    <span className="bg-amber-500 text-white px-3 py-1 rounded-full jua fs-xs">열기 →</span>
+                                </button>
+
+                                <button onClick={resetAll} className="py-4 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl jua fs-lg btn-shadow">
+                                    🔁 처음 화면으로
+                                </button>
                             </div>
                         )}
 
                         {tab === 'parent' && (
                             <div className="fade-up flex flex-col gap-3 max-w-2xl mx-auto w-full">
+                                <div className="bg-blue-50 rounded-2xl p-4 text-center border-2 border-blue-200">
+                                    <p className="jua fs-md text-blue-800 mb-1">💡 학부모 활동은 선택이에요</p>
+                                    <p className="jua fs-sm text-blue-600">아이의 기록은 이미 저장됐어요!</p>
+                                </div>
+
                                 <div className="bg-white rounded-2xl shadow-sm border-t-4 border-blue-400 p-4 flex flex-col gap-3">
                                     <h2 className="jua text-blue-900 fs-md leading-snug">
                                         👨‍👩‍👧 아이가 학교생활에 잘 적응하도록 돕고 계신가요?
                                     </h2>
                                     <div className="flex gap-2">
                                         <button onClick={() => { sfx.click(); setParentSup('잘 돕고 있음'); }}
-                                            className={"flex-1 py-3 jua rounded-xl fs-sm transition-all " + (parentSup === '잘 돕고 있음' ? 'bg-blue-500 text-white shadow' : 'bg-slate-100 text-slate-600 hover:bg-slate-200')}>
+                                            className={"flex-1 py-3 jua rounded-xl fs-sm " + (parentSup === '잘 돕고 있음' ? 'bg-blue-500 text-white shadow' : 'bg-slate-100 text-slate-600')}>
                                             👍 잘 돕고 있어요
                                         </button>
                                         <button onClick={() => { sfx.click(); setParentSup('더 노력할 예정'); }}
-                                            className={"flex-1 py-3 jua rounded-xl fs-sm transition-all " + (parentSup === '더 노력할 예정' ? 'bg-orange-400 text-white shadow' : 'bg-slate-100 text-slate-600 hover:bg-slate-200')}>
+                                            className={"flex-1 py-3 jua rounded-xl fs-sm " + (parentSup === '더 노력할 예정' ? 'bg-orange-400 text-white shadow' : 'bg-slate-100 text-slate-600')}>
                                             💪 도움이 필요해요
                                         </button>
                                     </div>
                                     <textarea value={parentNote} onChange={e => setParentNote(e.target.value)}
-                                        className="p-4 fs-md jua rounded-xl border-2 border-slate-100 bg-slate-50 outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none min-h-[6rem] leading-relaxed"
+                                        className="p-4 fs-md jua rounded-xl border-2 border-slate-100 bg-slate-50 outline-none focus:border-blue-400 text-slate-700 resize-none min-h-[6rem] leading-relaxed"
                                         rows="3"
                                         placeholder="가정에서 느낀 점을 자유롭게 적어주세요." />
 
                                     {!parentSubmitted ? (
                                         <button disabled={isSaving} onClick={async () => {
                                             setIsSaving(true);
-                                            dbg('SAVE', '👨‍👩‍👧 학부모 소감 저장 시작', { recordId, status: parentSup });
                                             if (GAS_URL && recordId) {
                                                 const r = await api.post({ action: 'updateParentRecord', recordId, parentStatus: parentSup, parentNote });
-                                                if (r && r.success) {
-                                                    dbg('SAVE', '✅ 학부모 소감 저장 성공');
-                                                    sfx.complete();
-                                                } else {
-                                                    dbg('ERR', '❌ 학부모 소감 저장 실패', r);
-                                                    alert('⚠️ 학부모 소감 저장 실패: ' + (r && r.error ? r.error : '알 수 없는 오류'));
-                                                    setIsSaving(false);
-                                                    return;
-                                                }
+                                                if (r && r.success) sfx.complete();
+                                                else { alert('학부모 소감 저장 실패: ' + (r && r.error ? r.error : '알 수 없는 오류')); setIsSaving(false); return; }
                                             }
                                             setIsSaving(false);
                                             setParentSubmitted(true);
                                             setBigSticker(true);
                                             setTimeout(() => setBigSticker(false), 1700);
-                                        }}
-                                            className={"py-3 fs-md text-white rounded-xl jua btn-shadow transition-all flex items-center justify-center gap-2 " + (isSaving ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700')}>
+                                        }} className={"py-3 fs-md text-white rounded-xl jua btn-shadow " + (isSaving ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700')}>
                                             📤 제출하기 (선택)
                                         </button>
                                     ) : (
-                                        <div className="flex flex-col gap-2">
-                                            <div className="bg-green-100 text-green-800 jua fs-sm py-3 rounded-xl text-center flex items-center justify-center gap-2 border-2 border-green-200">
-                                                ✅ 소감 제출 완료!
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <button onClick={() => { sfx.click(); setParentSubmitted(false); }} className="flex-1 py-3 bg-slate-100 text-slate-600 jua rounded-xl btn-shadow fs-sm">✏️ 수정하기</button>
-                                                <button onClick={() => { sfx.click(); setDone(true); }} className="flex-1 py-3 bg-amber-500 text-white jua rounded-xl btn-shadow fs-sm">🏆 칭찬창</button>
-                                            </div>
+                                        <div className="bg-green-100 text-green-800 jua fs-sm py-3 rounded-xl text-center border-2 border-green-200">
+                                            ✅ 소감 제출 완료!
                                         </div>
                                     )}
                                 </div>
 
                                 <div className="flex flex-col gap-2">
                                     <p className="text-center text-slate-500 jua fs-sm">🔍 참고 자료 보기</p>
-                                    <button onClick={() => { sfx.click(); setActivePopup('tips30'); }}
-                                        className="w-full bg-indigo-50 hover:bg-indigo-100 active:scale-95 border-2 border-indigo-200 rounded-2xl flex items-center justify-between px-4 py-3 transition-all">
+                                    <button onClick={() => { sfx.click(); setActivePopup('tips30'); }} className="w-full bg-indigo-50 hover:bg-indigo-100 active:scale-95 border-2 border-indigo-200 rounded-2xl flex items-center justify-between px-4 py-3">
                                         <span className="jua text-indigo-900 fs-md">🏫 초등학교 생활 꿀팁 30선</span>
                                         <span className="bg-indigo-500 text-white px-3 py-1 rounded-full jua fs-xs">열기</span>
                                     </button>
-                                    <button onClick={() => { sfx.click(); setActivePopup('eduTips'); }}
-                                        className="w-full bg-blue-50 hover:bg-blue-100 active:scale-95 border-2 border-blue-200 rounded-2xl flex items-center justify-between px-4 py-3 transition-all">
+                                    <button onClick={() => { sfx.click(); setActivePopup('eduTips'); }} className="w-full bg-blue-50 hover:bg-blue-100 active:scale-95 border-2 border-blue-200 rounded-2xl flex items-center justify-between px-4 py-3">
                                         <span className="jua text-blue-900 fs-md">💡 가정 연계 교육 팁</span>
                                         <span className="bg-blue-500 text-white px-3 py-1 rounded-full jua fs-xs">열기</span>
                                     </button>
-                                    <button onClick={() => { sfx.click(); setActivePopup('site'); }}
-                                        className="w-full bg-emerald-50 hover:bg-emerald-100 active:scale-95 border-2 border-emerald-200 rounded-2xl flex items-center justify-between px-4 py-3 transition-all">
+                                    <button onClick={() => { sfx.click(); setActivePopup('site'); }} className="w-full bg-emerald-50 hover:bg-emerald-100 active:scale-95 border-2 border-emerald-200 rounded-2xl flex items-center justify-between px-4 py-3">
                                         <span className="jua text-emerald-900 fs-md">🌱 유초이음 활용 사이트</span>
                                         <span className="bg-emerald-500 text-white px-3 py-1 rounded-full jua fs-xs">열기</span>
                                     </button>
@@ -1443,6 +1465,8 @@
                     </div>
                 </div>
             );
+
+            return null;
         }
 
         ReactDOM.createRoot(document.getElementById('root')).render(<ErrBound><App /></ErrBound>);
