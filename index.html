@@ -639,18 +639,20 @@
             );
         };
 
-        /* 녹음 */
+        /* 녹음 + 텍스트 입력 */
         const RecordingScreen = ({ onDone, onSkip, providedStream, speakerOn }) => {
+            const [mode, setMode] = useState('choose'); // choose | voice | text
             const [state, setState] = useState('idle');
             const [audioUrl, setAudioUrl] = useState(null);
+            const [textInput, setTextInput] = useState('');
             const mr = useRef(null);
             const chunks = useRef([]);
             const b64 = useRef(null);
 
             useEffect(() => {
-                if (speakerOn) speak('내가 학교에서 잘 할 다짐을 녹음해 볼까요?');
+                if (speakerOn && mode === 'choose') speak('어떻게 다짐을 남길지 골라볼까요?');
                 return () => stopSpeak();
-            }, []);
+            }, [mode]);
 
             const examples = [
                 "나는 학교 가기 전에 스스로 가방을 챙길 거에요!",
@@ -688,6 +690,75 @@
                 setState('done');
             };
 
+            const submitText = () => {
+                if (!textInput.trim()) {
+                    alert('다짐을 입력해주세요!');
+                    return;
+                }
+                sfx.click();
+                onDone(null, textInput.trim()); // audioBase64=null, textPledge
+            };
+
+            // 모드 선택 화면
+            if (mode === 'choose') return (
+                <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100 p-4 text-center overflow-y-auto custom-sc">
+                    <div className="pop w-full flex flex-col items-center gap-5 max-w-2xl">
+                        <Fairy mood="happy" cls="scale-100" />
+                        <h2 className="fs-2xl jua text-amber-900">✨ 다짐을 남겨요!</h2>
+                        <p className="fs-md ngo text-amber-700 px-4 leading-relaxed">
+                            어떻게 나의 다짐을 남길까요?<br/>마음에 드는 방법을 골라보세요!
+                        </p>
+                        <div className="flex gap-3 w-full max-w-xl">
+                            <button onClick={() => { sfx.click(); setMode('voice'); }} className="flex-1 py-8 bg-gradient-to-b from-red-100 to-red-200 hover:from-red-200 hover:to-red-300 border-4 border-red-300 rounded-3xl btn-shadow flex flex-col items-center gap-2">
+                                <span className="text-7xl">🎤</span>
+                                <span className="jua fs-lg text-red-800">목소리로</span>
+                                <span className="ngo fs-sm text-red-700">녹음하기</span>
+                            </button>
+                            <button onClick={() => { sfx.click(); setMode('text'); }} className="flex-1 py-8 bg-gradient-to-b from-blue-100 to-blue-200 hover:from-blue-200 hover:to-blue-300 border-4 border-blue-300 rounded-3xl btn-shadow flex flex-col items-center gap-2">
+                                <span className="text-7xl">⌨️</span>
+                                <span className="jua fs-lg text-blue-800">글자로</span>
+                                <span className="ngo fs-sm text-blue-700">써보기</span>
+                            </button>
+                        </div>
+                        <button onClick={() => { sfx.click(); onSkip(); }} className="py-3 px-6 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">
+                            건너뛰기
+                        </button>
+                    </div>
+                </div>
+            );
+
+            // 텍스트 입력 화면
+            if (mode === 'text') return (
+                <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-cyan-100 p-4 text-center overflow-y-auto custom-sc">
+                    <div className="pop w-full flex flex-col items-center gap-4 max-w-2xl">
+                        <Fairy mood="happy" cls="scale-100" />
+                        <h2 className="fs-2xl jua text-blue-900">⌨️ 다짐 글로 쓰기!</h2>
+                        <div className="w-full bg-white/90 rounded-2xl p-4 flex flex-col gap-2 text-left shadow-sm border-2 border-blue-100">
+                            <p className="fs-md jua text-blue-700 mb-1">💬 이런 다짐은 어떨까요?</p>
+                            {examples.map((ex, i) => (
+                                <p key={i} className="fs-sm ngo text-slate-700 leading-relaxed pl-3 border-l-4 border-blue-300">{ex}</p>
+                            ))}
+                        </div>
+                        <textarea
+                            value={textInput}
+                            onChange={e => setTextInput(e.target.value)}
+                            placeholder="여기에 나의 다짐을 적어보세요!"
+                            rows="4"
+                            className="w-full p-4 fs-md jua rounded-2xl border-4 border-blue-200 bg-white outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none"
+                        />
+                        <div className="flex gap-2 w-full">
+                            <button onClick={() => { sfx.click(); setMode('choose'); setTextInput(''); }} className="py-4 px-4 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">
+                                ← 뒤로
+                            </button>
+                            <button onClick={submitText} className="flex-1 py-4 bg-blue-500 hover:bg-blue-600 text-white fs-lg jua rounded-2xl btn-shadow flex items-center justify-center gap-2">
+                                💾 제출하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            // 녹음 화면
             return (
                 <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100 p-4 text-center overflow-y-auto custom-sc">
                     <div className="pop w-full flex flex-col items-center gap-4 max-w-2xl">
@@ -702,11 +773,11 @@
                         {audioUrl && <audio src={audioUrl} controls className="w-full rounded-xl" />}
                         {state === 'idle' && (
                             <div className="flex gap-2 w-full">
+                                <button onClick={() => { sfx.click(); setMode('choose'); }} className="py-5 px-4 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">
+                                    ←
+                                </button>
                                 <button onClick={start} className="flex-1 py-5 bg-red-500 hover:bg-red-600 text-white fs-lg jua rounded-2xl btn-shadow flex items-center justify-center gap-2">
                                     🎤 녹음 시작
-                                </button>
-                                <button onClick={() => { sfx.click(); onSkip(); }} className="py-5 px-4 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">
-                                    건너뛰기
                                 </button>
                             </div>
                         )}
@@ -718,7 +789,7 @@
                         {state === 'done' && (
                             <div className="flex gap-2 w-full">
                                 <button onClick={start} className="flex-1 py-5 bg-white text-slate-600 jua rounded-2xl btn-shadow fs-md">🔁 다시 녹음</button>
-                                <button onClick={() => { sfx.click(); onDone(b64.current); }} className="flex-1 py-5 bg-amber-500 hover:bg-amber-600 text-white fs-lg jua rounded-2xl btn-shadow flex items-center justify-center gap-2">
+                                <button onClick={() => { sfx.click(); onDone(b64.current, null); }} className="flex-1 py-5 bg-amber-500 hover:bg-amber-600 text-white fs-lg jua rounded-2xl btn-shadow flex items-center justify-center gap-2">
                                     💾 제출하기
                                 </button>
                             </div>
@@ -789,6 +860,8 @@
             const [showQuiz, setShowQuiz] = useState(false);
             const [showRec, setShowRec] = useState(false);
             const [studentSaved, setStudentSaved] = useState(false);
+            const [textPledge, setTextPledge] = useState(''); // 텍스트로 작성한 다짐
+            const [audioPledge, setAudioPledge] = useState(null); // 녹음 base64
 
             const [parentSup, setParentSup] = useState('');
             const [parentNote, setParentNote] = useState('');
@@ -881,19 +954,20 @@
                 if (!ok) setShowChecklist(true);
             };
 
-            const saveRecord = async (audioString, parentData) => {
+            const saveRecord = async (parentData) => {
                 if (!user) return;
                 setIsSaving(true);
 
                 const mLine = missionsResult
                     ? missions.map((m, i) => `${m.항목}: ${missionsResult[i] === 'good' ? '😃' : '☹️'}`).join('\n')
                     : '(아이 활동 미완료)';
-                const content = `[아이 기록]\n${mLine}\n\n[학부모 기록]\n진행 상태: ${(parentData && parentData.sup) || '미선택'}\n내용: ${(parentData && parentData.note) || ''}`;
+                const pledgeLine = textPledge ? `\n[글로 쓴 다짐]: ${textPledge}` : '';
+                const content = `[아이 기록]\n${mLine}${pledgeLine}\n\n[학부모 기록]\n진행 상태: ${(parentData && parentData.sup) || '미선택'}\n내용: ${(parentData && parentData.note) || ''}`;
                 const record = { studentNumber: user.학번, studentName: user.이름, type: '누가기록 통합', content, reflection: '' };
 
                 if (GAS_URL) {
-                    if (audioString) {
-                        const ar = await api.post({ action: 'uploadAudioToDrive', base64Data: audioString, filename: `${user.학번}_${user.이름}_다짐.webm` });
+                    if (audioPledge) {
+                        const ar = await api.post({ action: 'uploadAudioToDrive', base64Data: audioPledge, filename: `${user.학번}_${user.이름}_다짐.webm` });
                         if (ar && ar.success) record.content += `\n\n[오디오]: ${ar.fileUrl}`;
                     }
                     const sr = await api.post({ action: 'saveCumulativeRecord', record });
@@ -1069,7 +1143,7 @@
 
             if (showMission) return <div className="app-frame"><MissionPopup missions={missions} speakerOn={speakerOn} onComplete={r => { setMissionsResult(r); setShowMission(false); setShowQuiz(true); }} /></div>;
             if (showQuiz) return <div className="app-frame"><QuizPopup speakerOn={speakerOn} onComplete={() => { setShowQuiz(false); setQuizDone(true); setShowRec(true); }} /></div>;
-            if (showRec) return <div className="app-frame"><RecordingScreen providedStream={micStream} speakerOn={speakerOn} onDone={() => { setShowRec(false); setStudentSaved(true); }} onSkip={() => { setShowRec(false); setStudentSaved(true); }} /></div>;
+            if (showRec) return <div className="app-frame"><RecordingScreen providedStream={micStream} speakerOn={speakerOn} onDone={(audioB64, txt) => { setAudioPledge(audioB64); setTextPledge(txt || ''); setShowRec(false); setStudentSaved(true); }} onSkip={() => { setShowRec(false); setStudentSaved(true); }} /></div>;
 
             if (done) return (
                 <div className="app-frame">
@@ -1202,7 +1276,7 @@
                                         placeholder="가정에서 느낀 점을 자유롭게 적어주세요." />
 
                                     {!parentSubmitted ? (
-                                        <button disabled={isSaving} onClick={() => saveRecord(null, { sup: parentSup, note: parentNote })}
+                                        <button disabled={isSaving} onClick={() => saveRecord({ sup: parentSup, note: parentNote })}
                                             className={"py-3 fs-md text-white rounded-xl jua btn-shadow transition-all flex items-center justify-center gap-2 " + (isSaving ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700')}>
                                             📤 제출하기
                                         </button>
