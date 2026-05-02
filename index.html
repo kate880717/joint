@@ -110,22 +110,22 @@
            ★ 3주 프로그램 데이터 ★
         ══════════════════════════════════════════════ */
 
-        // 15개 명언 (유치원 눈높이)
+        // 15개 명언 (유치원~1학년 눈높이, 자존감/공감 중심)
         const QUOTES = [
             "오늘도 학교에 와줘서 정말 고마워!",
             "넘어져도 다시 일어서면 진짜 멋져!",
-            "친구에게 먼저 인사하면 친구가 생겨요.",
-            "모르는 건 부끄러운 게 아니에요. 물어보면 돼요!",
-            "내가 한 일은 내가 정리해요. 멋있죠?",
+            "친구에게 먼저 인사하면 마음이 따뜻해져요.",
+            "모르는 건 부끄러운 게 아니에요. 물어봐도 괜찮아요!",
+            "내 물건은 내가 챙겨요. 나는 할 수 있어요!",
             "조금 천천히 해도 괜찮아요. 잘하고 있어요!",
-            "친구가 잘하면 박수를 쳐줘요. 우리는 한 팀!",
-            "오늘 한 가지 새로운 걸 배웠어요. 와! 멋져요!",
-            "선생님 말씀을 잘 들으면 똑똑해져요!",
-            "맛있게 먹고 튼튼해지는 게 1학년의 일이에요.",
-            "친구랑 사이좋게 노는 너, 정말 자랑스러워!",
-            "실수해도 괜찮아. 다음에 더 잘하면 돼요!",
+            "친구가 잘하면 같이 기뻐해 주는 너, 정말 멋져!",
+            "오늘 한 가지라도 새로 알았다면, 그것만으로 충분해요.",
+            "맛있게 먹고 즐겁게 노는 게 가장 중요해요.",
+            "친구랑 사이좋게 지내는 너, 정말 자랑스러워!",
+            "실수해도 괜찮아. 실수는 배우는 거예요!",
             "스스로 한 너에게 칭찬을 듬뿍 줄게!",
-            "꿈은 매일 자라나요. 너도 매일 자라!",
+            "오늘의 너는 어제의 너보다 한 뼘 자랐어요.",
+            "있는 그대로의 너가 정말 사랑스러워.",
             "오늘 학교생활, 정말 잘 해냈어! 👏"
         ];
 
@@ -892,27 +892,34 @@
             );
 
             return (
-                <div className="h-full w-full flex flex-col items-center justify-start bg-gradient-to-b from-amber-50 to-yellow-100 p-3 text-center overflow-y-auto custom-sc">
+                <div className="h-full w-full flex flex-col items-center bg-gradient-to-b from-amber-50 to-yellow-100 p-3 text-center overflow-y-auto custom-sc">
                     <div className="pop w-full flex flex-col items-center gap-3 max-w-2xl mt-2">
                         <h2 className="fs-2xl jua text-amber-900">🎙️ 다짐 녹음하기!</h2>
 
                         {state === 'idle' && (
-                            <div className="w-full bg-white/90 rounded-2xl p-3 flex flex-col gap-1 text-left shadow-sm border-2 border-amber-100">
-                                <p className="fs-md jua text-amber-700">💬 이런 다짐은 어떨까요?</p>
-                                {examples.map((ex, i) => (
-                                    <p key={i} className="fs-md jua text-slate-700 leading-snug pl-3 border-l-4 border-amber-300">{ex}</p>
-                                ))}
-                            </div>
+                            <>
+                                <div className="w-full bg-white rounded-2xl p-3 flex flex-col gap-2 text-left shadow-sm border-3 border-amber-200" style={{borderWidth:'3px'}}>
+                                    <p className="fs-md jua text-amber-700">💬 예시 문장 — 클릭하면 읽어줘요!</p>
+                                    {examples.map((ex, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => { sfx.click(); stopSpeak(); speak(ex); }}
+                                            className="text-left fs-md jua text-slate-700 leading-snug pl-3 py-2 border-l-4 border-amber-300 bg-amber-50 hover:bg-amber-100 active:scale-95 rounded-r-xl transition-all flex items-center gap-2">
+                                            <span className="text-amber-500">🔊</span>
+                                            <span className="flex-1">{ex}</span>
+                                        </button>
+                                    ))}
+                                    <p className="fs-sm jua text-amber-600 mt-1 text-center">👆 듣고 따라 말하면서 녹음해 보세요!</p>
+                                </div>
+                            </>
                         )}
 
-                        {/* STT 미지원 안내 */}
                         {!sttSupported && state === 'idle' && (
                             <div className="w-full bg-orange-50 border-2 border-orange-200 rounded-2xl p-3 text-left">
-                                <p className="fs-sm jua text-orange-800">⚠️ 이 브라우저는 음성→텍스트 변환을 지원하지 않아요. <strong>녹음은 됩니다!</strong> 변환된 글이 안 나오면 직접 입력해주세요. (Chrome 브라우저 권장)</p>
+                                <p className="fs-sm jua text-orange-800">⚠️ 이 브라우저는 음성→텍스트 변환을 지원하지 않아요. <strong>녹음은 됩니다!</strong> Chrome 권장.</p>
                             </div>
                         )}
 
-                        {/* 항상 보이는 입력란 - 녹음 중엔 자동 채워지고, 안 되면 직접 입력 */}
                         {(state === 'rec' || state === 'done') && (
                             <div className="w-full bg-white rounded-2xl p-3 flex flex-col gap-2 shadow-sm border-2 border-amber-200">
                                 <p className="fs-md jua text-amber-700 text-left flex items-center gap-2">
@@ -922,11 +929,11 @@
                                     value={state === 'rec' ? sttText : editableStt}
                                     onChange={e => {
                                         if (state === 'done') setEditableStt(e.target.value);
-                                        else setSttText(e.target.value); // 녹음 중에도 직접 입력 가능
+                                        else setSttText(e.target.value);
                                     }}
                                     placeholder={state === 'rec' ? "목소리를 들려주세요! 또는 직접 입력해도 돼요" : "여기에 다짐을 적거나 수정해주세요"}
-                                    rows="3"
-                                    className="w-full p-3 fs-lg jua rounded-xl border-2 border-amber-100 bg-amber-50 outline-none focus:border-amber-400 text-slate-700 resize-none leading-relaxed"
+                                    rows="4"
+                                    className="w-full p-4 fs-lg jua rounded-xl border-2 border-amber-100 bg-amber-50 outline-none focus:border-amber-400 text-slate-700 resize-none leading-relaxed"
                                 />
                             </div>
                         )}
@@ -934,8 +941,8 @@
                         {audioUrl && state === 'done' && <audio src={audioUrl} controls className="w-full rounded-xl" />}
 
                         {state === 'idle' && (
-                            <div className="flex gap-2 w-full">
-                                <button onClick={() => { sfx.click(); setMode('choose'); }} className="py-5 px-4 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">←</button>
+                            <div className="flex gap-2 w-full mt-1">
+                                <button onClick={() => { sfx.click(); setMode('choose'); }} className="py-5 px-5 bg-white text-slate-500 jua rounded-2xl btn-shadow fs-md">←</button>
                                 <button onClick={start} className="flex-1 py-5 bg-red-500 hover:bg-red-600 text-white fs-xl jua rounded-2xl btn-shadow">🎤 녹음 시작</button>
                             </div>
                         )}
@@ -1166,32 +1173,50 @@
                 if (!activePopup) return null;
                 const close = () => { sfx.click(); setActivePopup(null); stopSpeak(); };
 
-                if (activePopup === 'tips30') return (
-                    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-3 fade-up">
-                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
-                            <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b flex justify-between items-center">
-                                <h2 className="jua fs-md text-indigo-900">🏫 초등학교 생활 꿀팁 30선</h2>
-                                <button onClick={close} className="bg-white text-slate-500 px-3 py-1 rounded-full shadow-sm fs-sm jua">닫기</button>
-                            </div>
-                            <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-sc">
-                                {appData.Transition.map((q, i) => (
-                                    <div key={i} className="flex flex-col gap-2 p-3 bg-white rounded-2xl shadow-sm border-2 border-indigo-50">
-                                        <div className="flex gap-2 items-start">
-                                            <span className="text-indigo-500 jua fs-md shrink-0">Q.</span>
-                                            <span className="jua text-indigo-900 fs-sm">{q.질문}</span>
+                if (activePopup === 'tips30') {
+                    const list = appData.Transition || [];
+                    return (
+                        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-3 fade-up">
+                            <div className="bg-white rounded-3xl shadow-xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
+                                <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b flex justify-between items-center">
+                                    <h2 className="jua fs-md text-indigo-900">🏫 초등학교 생활 꿀팁 ({list.length}개)</h2>
+                                    <button onClick={close} className="bg-white text-slate-500 px-3 py-1 rounded-full shadow-sm fs-sm jua">닫기</button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-sc">
+                                    {list.length === 0 && (
+                                        <div className="text-center py-8 text-slate-400 jua fs-md">
+                                            데이터를 불러올 수 없어요.<br/>
+                                            🛠 연결 진단으로 확인해주세요.
                                         </div>
-                                        {q.답변 && (
-                                            <div className="flex gap-2 items-start ml-2 mt-2 pt-2 border-t border-slate-100">
-                                                <span className="text-amber-500 jua fs-md shrink-0">A.</span>
-                                                <span className="jua text-slate-700 fs-sm leading-relaxed">{q.답변}</span>
+                                    )}
+                                    {list.map((q, i) => {
+                                        // 시트 컬럼명이 다를 수 있어 fallback 처리
+                                        const question = q.질문 || q.Q || q.question || '';
+                                        const answer = q.답변 || q.A || q.answer || '';
+                                        const category = q.카테고리 || q.category || '';
+                                        return (
+                                            <div key={i} className="flex flex-col gap-2 p-3 bg-white rounded-2xl shadow-sm border-2 border-indigo-50">
+                                                <div className="flex gap-2 items-start">
+                                                    <span className="text-indigo-500 jua fs-md shrink-0">Q{i+1}.</span>
+                                                    <span className="jua text-indigo-900 fs-md flex-1">{question}</span>
+                                                </div>
+                                                {answer && (
+                                                    <div className="flex gap-2 items-start ml-2 mt-1 pt-2 border-t border-slate-100">
+                                                        <span className="text-amber-500 jua fs-md shrink-0">A.</span>
+                                                        <span className="jua text-slate-700 fs-md leading-relaxed flex-1">{answer}</span>
+                                                    </div>
+                                                )}
+                                                {category && (
+                                                    <span className="self-start text-xs jua bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full mt-1">{category}</span>
+                                                )}
                                             </div>
-                                        )}
-                                    </div>
-                                ))}
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                );
+                    );
+                }
 
                 if (activePopup === 'eduTips') return (
                     <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-3 fade-up">
