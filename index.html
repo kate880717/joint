@@ -255,6 +255,8 @@
 
         /* 효과음 */
         let audioCtx = null;
+        let speakerEnabled = false; // 스피커 상태 (효과음/TTS 공통 게이트)
+        const setSpeakerEnabled = (v) => { speakerEnabled = v; };
         const getAudio = () => {
             if (!audioCtx) {
                 try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
@@ -264,6 +266,7 @@
             return audioCtx;
         };
         const playTone = (freq, dur, type='sine', vol=0.15) => {
+            if (!speakerEnabled) return; // 스피커 OFF면 무음
             const ctx = getAudio();
             if (!ctx) return;
             const osc = ctx.createOscillator();
@@ -840,12 +843,15 @@
             }, []);
 
             const toggleSpeaker = () => {
-                sfx.click();
                 if (speakerOn) {
+                    setSpeakerEnabled(false);
+                    sfx.click(); // 끄기 직전엔 OFF라 어차피 안 들림
                     stopSpeak();
                     setSpeakerOn(false);
                 } else {
+                    setSpeakerEnabled(true);
                     setSpeakerOn(true);
+                    sfx.click();
                     setTimeout(() => speak('스피커를 켰어요. 이제 문제를 읽어줄게요!'), 200);
                 }
             };
