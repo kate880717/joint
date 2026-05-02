@@ -11,7 +11,7 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&family=Black+Han+Sans&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&family=Black+Han+Sans&display=swap" rel="stylesheet">
     <style>
         *,*::before,*::after { box-sizing: border-box; }
         html, body {
@@ -21,8 +21,9 @@
             -webkit-text-size-adjust: 100%;
         }
         body {
-            font-family: 'Gaegu', 'Jua', sans-serif;
-            background: linear-gradient(135deg, #fef3c7 0%, #fce7f3 50%, #dbeafe 100%);
+            font-family: 'Nanum Gothic', 'Jua', sans-serif;
+            font-weight: 700;
+            background: #ffffff;
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -30,32 +31,21 @@
             position: fixed;
             inset: 0;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: stretch;
+            justify-content: stretch;
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
         .app-frame {
             width: 100%;
             height: 100%;
-            max-width: 480px;
-            max-height: 100%;
             background: white;
-            box-shadow: 0 25px 80px rgba(0,0,0,0.15);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            border-radius: 0;
             position: relative;
         }
-        @media (min-width: 481px) {
-            .app-frame {
-                max-height: min(100%, 900px);
-                border-radius: 28px;
-            }
-        }
-        .jua { font-family: 'Jua', sans-serif; }
-        .gaegu { font-family: 'Gaegu', sans-serif; font-weight: 700; }
-        .blackhan { font-family: 'Black Han Sans', sans-serif; }
+        .jua { font-family: 'Jua', 'Nanum Gothic', sans-serif; }
+        .ngo { font-family: 'Nanum Gothic', sans-serif; font-weight: 800; }
 
         .custom-sc::-webkit-scrollbar { width: 8px; height: 8px; }
         .custom-sc::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); border-radius: 10px; }
@@ -63,13 +53,13 @@
         .custom-sc { scrollbar-width: thin; scrollbar-color: #cbd5e1 rgba(0,0,0,0.02); }
 
         :root {
-            --fs-xs: clamp(0.85rem, 2.2vmin, 1rem);
-            --fs-sm: clamp(1rem, 2.6vmin, 1.2rem);
-            --fs-md: clamp(1.15rem, 3.2vmin, 1.45rem);
-            --fs-lg: clamp(1.4rem, 4vmin, 1.75rem);
-            --fs-xl: clamp(1.7rem, 5vmin, 2.1rem);
-            --fs-2xl: clamp(2.1rem, 6.5vmin, 2.7rem);
-            --fs-3xl: clamp(2.6rem, 8vmin, 3.5rem);
+            --fs-xs: clamp(0.85rem, 1.4vmin, 1.05rem);
+            --fs-sm: clamp(1rem, 1.8vmin, 1.3rem);
+            --fs-md: clamp(1.2rem, 2.4vmin, 1.65rem);
+            --fs-lg: clamp(1.45rem, 3vmin, 2.1rem);
+            --fs-xl: clamp(1.8rem, 3.8vmin, 2.6rem);
+            --fs-2xl: clamp(2.2rem, 4.8vmin, 3.3rem);
+            --fs-3xl: clamp(2.7rem, 6vmin, 4.2rem);
         }
         .fs-xs { font-size: var(--fs-xs); }
         .fs-sm { font-size: var(--fs-sm); }
@@ -115,19 +105,10 @@
         .confetti {
             position: absolute;
             top: 50%; left: 50%;
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vmin, 3.5rem);
             pointer-events: none;
             animation: confetti-fall 1.6s cubic-bezier(.4,.7,.7,1) forwards;
             z-index: 100;
-        }
-
-        @keyframes sticker-appear {
-            0% { opacity: 0; transform: scale(0) rotate(-180deg); }
-            70% { opacity: 1; transform: scale(1.3) rotate(15deg); }
-            100% { opacity: 1; transform: scale(1) rotate(0deg); }
-        }
-        .sticker {
-            animation: sticker-appear .7s cubic-bezier(.34,1.56,.64,1) both;
         }
 
         .tts-highlight {
@@ -170,20 +151,6 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        @keyframes float-up {
-            0% { opacity: 0; transform: translateY(20px); }
-            20% { opacity: 1; transform: translateY(0); }
-            80% { opacity: 1; transform: translateY(-30px); }
-            100% { opacity: 0; transform: translateY(-60px); }
-        }
-        .float-up {
-            position: absolute;
-            font-size: 3rem;
-            pointer-events: none;
-            animation: float-up 2s ease-out forwards;
-            z-index: 50;
-        }
     </style>
 </head>
 
@@ -192,14 +159,9 @@
     <script type="text/babel">
         const { useState, useEffect, useRef, useCallback } = React;
 
-        /* ══════════════════════════════════════════════
-           ★ Apps Script URL ★
-        ══════════════════════════════════════════════ */
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyxMn0fzLjC1vD26INZETSbAdLv0uOhMlIOMDDJZxHjqaO0wM7qzrAPPfogwShrgJFgEw/exec';
 
-        /* ══════════════════════════════════════════════
-           ★ 디버그 로그 (화면에 표시) ★
-        ══════════════════════════════════════════════ */
+        /* 디버그 로그 */
         const debugLogs = [];
         const debugListeners = [];
         const dbg = (type, msg, data) => {
@@ -210,32 +172,24 @@
             console.log(`[${type}]`, msg, data || '');
         };
 
-        /* ══════════════════════════════════════════════
-           ★ API 헬퍼 ★
-        ══════════════════════════════════════════════ */
+        /* API */
         const api = {
             async getData() {
-                if (!GAS_URL) { dbg('WARN', 'GAS_URL 미설정 - 샘플 데이터 사용'); return null; }
-                dbg('GET', 'getData 요청 시작');
+                if (!GAS_URL) { dbg('WARN', 'GAS_URL 미설정'); return null; }
+                dbg('GET', 'getData 요청');
                 try {
                     const res = await fetch(GAS_URL, { redirect: 'follow' });
-                    dbg('GET', `응답 상태: ${res.status} ${res.statusText}`);
+                    dbg('GET', `응답: ${res.status}`);
                     const text = await res.text();
                     try {
                         const json = JSON.parse(text);
-                        dbg('GET', '데이터 수신 성공', { keys: Object.keys(json) });
+                        dbg('GET', '성공', { keys: Object.keys(json) });
                         return json;
-                    } catch(e) {
-                        dbg('ERR', 'JSON 파싱 실패', { preview: text.slice(0, 200) });
-                        return null;
-                    }
-                } catch (e) {
-                    dbg('ERR', 'getData 네트워크 오류', e.toString());
-                    return null;
-                }
+                    } catch(e) { dbg('ERR', 'JSON 파싱 실패', { preview: text.slice(0, 200) }); return null; }
+                } catch (e) { dbg('ERR', '네트워크 오류', e.toString()); return null; }
             },
             async post(payload) {
-                if (!GAS_URL) { dbg('WARN', 'GAS_URL 미설정 - mock 응답'); return { success: true, mock: true }; }
+                if (!GAS_URL) return { success: true, mock: true };
                 dbg('POST', `요청: ${payload.action}`, payload);
                 try {
                     const res = await fetch(GAS_URL, {
@@ -244,53 +198,39 @@
                         body: JSON.stringify(payload),
                         redirect: 'follow'
                     });
-                    dbg('POST', `응답 상태: ${res.status}`);
+                    dbg('POST', `응답: ${res.status}`);
                     const text = await res.text();
                     try {
                         const json = JSON.parse(text);
                         dbg('POST', `${payload.action} 결과`, json);
                         return json;
-                    } catch(e) {
-                        dbg('ERR', 'POST JSON 파싱 실패', { preview: text.slice(0, 200) });
-                        return { success: false, error: 'Invalid JSON response' };
-                    }
-                } catch (e) {
-                    dbg('ERR', 'post 네트워크 오류', e.toString());
-                    return { success: false, error: e.toString() };
-                }
+                    } catch(e) { dbg('ERR', 'POST JSON 파싱 실패', { preview: text.slice(0, 200) }); return { success: false }; }
+                } catch (e) { dbg('ERR', 'POST 네트워크 오류', e.toString()); return { success: false }; }
             }
         };
 
-        /* ══════════════════════════════════════════════
-           ★ TTS 시스템 ★ (Google 자연 음성 우선)
-        ══════════════════════════════════════════════ */
+        /* TTS */
         let cachedVoice = null;
         const pickKoreanVoice = () => {
             if (cachedVoice) return cachedVoice;
             const voices = window.speechSynthesis.getVoices();
             if (!voices.length) return null;
 
-            // 1순위: Google 한국어 클라우드 음성
             let v = voices.find(x => x.lang === 'ko-KR' && x.name.toLowerCase().includes('google') && !x.localService);
-            if (v) { cachedVoice = v; dbg('TTS', '음성 선택: Google ko-KR 클라우드', v.name); return v; }
+            if (v) { cachedVoice = v; dbg('TTS', '🌟 Google 클라우드 음성', v.name); return v; }
 
-            // 2순위: 이름에 wavenet/neural/premium/enhanced/natural 키워드
             v = voices.find(x => x.lang === 'ko-KR' && /wavenet|neural|premium|enhanced|natural/i.test(x.name));
-            if (v) { cachedVoice = v; dbg('TTS', '음성 선택: 자연 음성 키워드', v.name); return v; }
+            if (v) { cachedVoice = v; dbg('TTS', '🌟 자연 음성', v.name); return v; }
 
-            // 3순위: Google 한국어 (로컬이라도)
             v = voices.find(x => x.lang === 'ko-KR' && x.name.toLowerCase().includes('google'));
-            if (v) { cachedVoice = v; dbg('TTS', '음성 선택: Google ko-KR 로컬', v.name); return v; }
+            if (v) { cachedVoice = v; dbg('TTS', 'Google 로컬', v.name); return v; }
 
-            // 4순위: ko로 시작하는 여성 음성
             v = voices.find(x => x.lang.startsWith('ko') && /female|woman|여/i.test(x.name));
-            if (v) { cachedVoice = v; dbg('TTS', '음성 선택: 한국어 여성', v.name); return v; }
+            if (v) { cachedVoice = v; dbg('TTS', '한국어 여성', v.name); return v; }
 
-            // 5순위: 아무 한국어
             v = voices.find(x => x.lang.startsWith('ko'));
-            if (v) { cachedVoice = v; dbg('TTS', '음성 선택: 한국어', v.name); return v; }
+            if (v) { cachedVoice = v; dbg('TTS', '한국어', v.name); return v; }
 
-            dbg('TTS', '한국어 음성 없음, 기본값 사용');
             return voices[0];
         };
 
@@ -313,9 +253,7 @@
         };
         const stopSpeak = () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); };
 
-        /* ══════════════════════════════════════════════
-           ★ 효과음 (Web Audio API) ★
-        ══════════════════════════════════════════════ */
+        /* 효과음 */
         let audioCtx = null;
         const getAudio = () => {
             if (!audioCtx) {
@@ -363,15 +301,13 @@
             }
         };
 
-        /* ══════════════════════════════════════════════
-           ★ 칭찬 스티커 컴포넌트 ★
-        ══════════════════════════════════════════════ */
+        /* 칭찬 스티커 */
         const StickerBurst = ({ stickers = ['⭐','🌟','💖','🎉','🌈','✨','🎀','🌸'], onDone }) => {
             const [items] = useState(() => {
                 const out = [];
-                for (let i = 0; i < 16; i++) {
-                    const angle = (Math.PI * 2 * i) / 16 + Math.random() * 0.4;
-                    const dist = 150 + Math.random() * 120;
+                for (let i = 0; i < 18; i++) {
+                    const angle = (Math.PI * 2 * i) / 18 + Math.random() * 0.4;
+                    const dist = 200 + Math.random() * 180;
                     out.push({
                         emoji: stickers[Math.floor(Math.random() * stickers.length)],
                         tx: Math.cos(angle) * dist + 'px',
@@ -392,10 +328,8 @@
                 <div className="fixed inset-0 pointer-events-none z-[200]">
                     {items.map((it, i) => (
                         <span key={i} className="confetti" style={{
-                            '--tx': it.tx,
-                            '--ty': it.ty,
-                            '--tx-mid': it.txMid,
-                            '--ty-mid': it.tyMid,
+                            '--tx': it.tx, '--ty': it.ty,
+                            '--tx-mid': it.txMid, '--ty-mid': it.tyMid,
                             animationDelay: it.delay + 's'
                         }}>{it.emoji}</span>
                     ))}
@@ -403,9 +337,7 @@
             );
         };
 
-        /* ══════════════════════════════════════════════
-           ★ TTS 따라 읽기 텍스트 (글자 하이라이트) ★
-        ══════════════════════════════════════════════ */
+        /* TTS 따라 읽기 */
         const HighlightedText = ({ text, speakerOn, autoPlay = false, onDone, className = '' }) => {
             const [hlIdx, setHlIdx] = useState(-1);
             const playingRef = useRef(false);
@@ -415,12 +347,7 @@
                 if (playingRef.current) return;
                 playingRef.current = true;
                 stopSpeak();
-
-                // 단어 단위 분할 (공백 기준)
-                const words = text.split(/(\s+)/);
-                const wordOnly = text.split(/\s+/).filter(Boolean);
                 let wordIdx = -1;
-
                 await speak(text, {
                     onBoundary: (e) => {
                         if (e.name === 'word') {
@@ -439,9 +366,7 @@
                     const t = setTimeout(play, 300);
                     return () => { clearTimeout(t); stopSpeak(); };
                 }
-                if (autoPlay && !speakerOn) {
-                    onDone && onDone();
-                }
+                if (autoPlay && !speakerOn) onDone && onDone();
             }, [autoPlay, speakerOn]);
 
             const words = text.split(/(\s+)/);
@@ -462,14 +387,11 @@
             );
         };
 
-        /* ══════════════════════════════════════════════
-           ★ 샘플 데이터 ★
-        ══════════════════════════════════════════════ */
+        /* 샘플 데이터 */
         const MOCK = {
             Students: [{ 학번: '10101', 이름: '새싹이' }, { 학번: '10102', 이름: '김철수' }, { 학번: '10103', 이름: '이영희' }],
             Education: [
                 { 제목: '우유팩 혼자 열기 연습', 내용: '학교 급식시간에 우유를 스스로 열 수 있도록 집에서 미리 연습시켜주세요!' },
-                { 제목: '스스로 일어나는 습관', 내용: '아침에 알람을 맞추고 스스로 일어나는 연습을 시작하세요.' },
             ],
             Checklist: [
                 { 항목: '취학 전 필수 예방접종을 모두 마쳤나요?', 카테고리: '입학전' },
@@ -490,9 +412,6 @@
             Records: []
         };
 
-        /* ══════════════════════════════════════════════
-           ★ Error Boundary ★
-        ══════════════════════════════════════════════ */
         class ErrBound extends React.Component {
             constructor(p) { super(p); this.state = { err: null }; }
             static getDerivedStateFromError(e) { return { err: e }; }
@@ -507,9 +426,6 @@
             }
         }
 
-        /* ══════════════════════════════════════════════
-           ★ 요정 캐릭터 ★
-        ══════════════════════════════════════════════ */
         const Fairy = ({ mood = 'happy', cls = '' }) => (
             <div className={"inline-block bob " + cls}>
                 <svg width="100" height="120" viewBox="0 0 120 150" fill="none">
@@ -530,9 +446,6 @@
             </div>
         );
 
-        /* ══════════════════════════════════════════════
-           ★ 스피너 ★
-        ══════════════════════════════════════════════ */
         const Spinner = ({ text }) => (
             <div className="h-full w-full flex flex-col items-center justify-center bg-amber-50">
                 <svg className="spin-anim text-amber-400 mb-4" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -542,9 +455,6 @@
             </div>
         );
 
-        /* ══════════════════════════════════════════════
-           ★ 디버그 패널 ★
-        ══════════════════════════════════════════════ */
         const DebugPanel = ({ onClose }) => {
             const [logs, setLogs] = useState([...debugLogs]);
             useEffect(() => {
@@ -553,51 +463,48 @@
                 return () => { const i = debugListeners.indexOf(fn); if (i >= 0) debugListeners.splice(i, 1); };
             }, []);
 
-            const testGet = async () => { dbg('TEST', '🔍 GET 테스트 시작'); const r = await api.getData(); dbg('TEST', '결과', r ? 'OK' : 'FAIL'); };
+            const testGet = async () => { dbg('TEST', '🔍 GET 테스트'); await api.getData(); };
             const testPost = async () => {
-                dbg('TEST', '🔍 POST 테스트 시작');
-                const r = await api.post({ action: 'saveCumulativeRecord', record: { studentNumber: 'TEST', studentName: '테스트', type: '연결테스트', content: '디버그패널 테스트 ' + new Date().toLocaleString(), reflection: '' } });
-                dbg('TEST', '결과', r);
+                dbg('TEST', '🔍 POST 테스트');
+                await api.post({ action: 'saveCumulativeRecord', record: { studentNumber: 'TEST', studentName: '테스트', type: '연결테스트', content: '디버그 테스트 ' + new Date().toLocaleString(), reflection: '' } });
             };
 
-            const colorOf = (t) => ({ ERR: 'text-red-600', WARN: 'text-orange-600', GET: 'text-blue-600', POST: 'text-purple-600', TEST: 'text-green-700', TTS: 'text-pink-600' }[t] || 'text-slate-700');
+            const colorOf = (t) => ({ ERR: '#fca5a5', WARN: '#fdba74', GET: '#93c5fd', POST: '#c4b5fd', TEST: '#86efac', TTS: '#f9a8d4', MIC: '#fcd34d', MOCK: '#cbd5e1' }[t] || '#e2e8f0');
 
             return (
                 <div className="fixed inset-0 bg-slate-900/70 z-[300] flex items-center justify-center p-3">
                     <div className="bg-white rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
                         <div className="bg-slate-800 text-white p-3 flex justify-between items-center">
-                            <div className="font-bold flex items-center gap-2">🛠 연결 진단 패널</div>
+                            <div className="ngo flex items-center gap-2 text-base">🛠 연결 진단 패널</div>
                             <button onClick={onClose} className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-sm">닫기</button>
                         </div>
                         <div className="p-3 bg-slate-50 border-b flex flex-wrap gap-2">
-                            <button onClick={testGet} className="text-xs bg-blue-500 text-white px-3 py-2 rounded-lg font-bold">GET 테스트</button>
-                            <button onClick={testPost} className="text-xs bg-purple-500 text-white px-3 py-2 rounded-lg font-bold">POST 테스트</button>
-                            <button onClick={() => { debugLogs.length = 0; setLogs([]); }} className="text-xs bg-slate-300 text-slate-700 px-3 py-2 rounded-lg font-bold">로그 비우기</button>
+                            <button onClick={testGet} className="text-xs bg-blue-500 text-white px-3 py-2 rounded-lg ngo">GET 테스트</button>
+                            <button onClick={testPost} className="text-xs bg-purple-500 text-white px-3 py-2 rounded-lg ngo">POST 테스트</button>
+                            <button onClick={() => { debugLogs.length = 0; setLogs([]); }} className="text-xs bg-slate-300 text-slate-700 px-3 py-2 rounded-lg ngo">로그 비우기</button>
                         </div>
                         <div className="flex-1 overflow-y-auto p-3 font-mono text-xs custom-sc bg-slate-900 text-slate-100">
-                            {logs.length === 0 && <div className="text-slate-500">아직 로그가 없습니다. 위 버튼으로 테스트해보세요.</div>}
+                            {logs.length === 0 && <div className="text-slate-500">버튼을 눌러 테스트를 시작하세요.</div>}
                             {logs.map((l, i) => (
                                 <div key={i} className="mb-2 pb-2 border-b border-slate-700">
-                                    <div className="flex gap-2 items-center">
+                                    <div className="flex gap-2 items-center flex-wrap">
                                         <span className="text-slate-500">{l.time}</span>
-                                        <span className={"font-bold " + colorOf(l.type).replace('text-', 'text-')} style={{filter: 'brightness(1.6)'}}>[{l.type}]</span>
+                                        <span className="font-bold" style={{color: colorOf(l.type)}}>[{l.type}]</span>
                                         <span className="text-slate-200">{l.msg}</span>
                                     </div>
                                     {l.data && <pre className="text-[10px] text-slate-400 mt-1 whitespace-pre-wrap break-all pl-4">{typeof l.data === 'string' ? l.data : JSON.stringify(l.data, null, 1).slice(0, 400)}</pre>}
                                 </div>
                             ))}
                         </div>
-                        <div className="p-2 bg-slate-100 text-[10px] text-slate-500 text-center">
-                            GAS_URL: {GAS_URL ? GAS_URL.slice(0, 50) + '...' : '미설정'}
+                        <div className="p-2 bg-slate-100 text-[10px] text-slate-500 text-center break-all">
+                            GAS_URL: {GAS_URL ? GAS_URL.slice(0, 60) + '...' : '미설정'}
                         </div>
                     </div>
                 </div>
             );
         };
 
-        /* ══════════════════════════════════════════════
-           ★ 미션 팝업 ★
-        ══════════════════════════════════════════════ */
+        /* 미션 */
         const MissionPopup = ({ missions, speakerOn, onComplete }) => {
             const [idx, setIdx] = useState(0);
             const [res, setRes] = useState({});
@@ -607,7 +514,13 @@
             useEffect(() => () => stopSpeak(), []);
 
             const answer = (ans) => {
-                if (ans === 'good') sfx.correct(); else sfx.wrong();
+                if (ans === 'good') {
+                    sfx.correct();
+                    if (speakerOn) setTimeout(() => speak('잘했어요! 정말 멋져요!'), 350);
+                } else {
+                    sfx.wrong();
+                    if (speakerOn) setTimeout(() => speak('괜찮아요. 내일은 더 잘할 수 있어요!'), 350);
+                }
                 const nr = { ...res, [idx]: ans };
                 setRes(nr);
                 setFlash(ans);
@@ -617,14 +530,14 @@
                     setShowSticker(false);
                     if (idx < missions.length - 1) setIdx(idx + 1);
                     else onComplete(nr);
-                }, ans === 'good' ? 1600 : 800);
+                }, ans === 'good' ? 2000 : 1500);
             };
 
             return (
                 <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 to-pink-50 p-4 text-center relative overflow-hidden">
                     {showSticker && <StickerBurst onDone={() => {}} />}
-                    <div className="w-full mb-4 max-w-md">
-                        <div className="flex justify-between fs-sm jua text-amber-700 mb-2 px-1">
+                    <div className="w-full mb-4 max-w-2xl">
+                        <div className="flex justify-between fs-md jua text-amber-700 mb-2 px-1">
                             <span>📋 오늘의 활동 체크</span>
                             <span className="bg-amber-200 px-3 rounded-full">{idx + 1} / {missions.length}</span>
                         </div>
@@ -633,9 +546,9 @@
                                 style={{ width: `${((idx) / missions.length) * 100}%` }} />
                         </div>
                     </div>
-                    <div key={idx} className="pop bg-white rounded-3xl shadow-xl border-4 border-amber-200 p-6 w-full max-w-md flex flex-col items-center gap-5">
-                        <div className="text-5xl wiggle">📋</div>
-                        <p className="fs-xl jua text-slate-800 leading-relaxed break-keep min-h-[5rem] flex items-center">
+                    <div key={idx} className="pop bg-white rounded-3xl shadow-xl border-4 border-amber-200 p-6 w-full max-w-2xl flex flex-col items-center gap-5">
+                        <div className="text-6xl wiggle">📋</div>
+                        <p className="fs-xl jua text-slate-800 leading-relaxed break-keep flex items-center justify-center text-center" style={{minHeight: '5rem'}}>
                             <HighlightedText
                                 text={missions[idx].항목}
                                 speakerOn={speakerOn}
@@ -644,12 +557,12 @@
                         </p>
                         {flash === null ? (
                             <div className="flex gap-3 w-full">
-                                <button onClick={() => answer('good')} className="flex-1 py-6 bg-gradient-to-b from-green-100 to-green-200 hover:from-green-200 hover:to-green-300 border-4 border-green-300 rounded-3xl btn-shadow flex flex-col items-center gap-1">
-                                    <span className="text-6xl">😃</span>
+                                <button onClick={() => answer('good')} className="flex-1 py-7 bg-gradient-to-b from-green-100 to-green-200 hover:from-green-200 hover:to-green-300 border-4 border-green-300 rounded-3xl btn-shadow flex flex-col items-center gap-1">
+                                    <span className="text-7xl">😃</span>
                                     <span className="jua fs-md text-green-800">잘했어요!</span>
                                 </button>
-                                <button onClick={() => answer('bad')} className="flex-1 py-6 bg-gradient-to-b from-red-100 to-red-200 hover:from-red-200 hover:to-red-300 border-4 border-red-300 rounded-3xl btn-shadow flex flex-col items-center gap-1">
-                                    <span className="text-6xl">☹️</span>
+                                <button onClick={() => answer('bad')} className="flex-1 py-7 bg-gradient-to-b from-red-100 to-red-200 hover:from-red-200 hover:to-red-300 border-4 border-red-300 rounded-3xl btn-shadow flex flex-col items-center gap-1">
+                                    <span className="text-7xl">☹️</span>
                                     <span className="jua fs-md text-red-800">아쉬워요</span>
                                 </button>
                             </div>
@@ -662,9 +575,7 @@
             );
         };
 
-        /* ══════════════════════════════════════════════
-           ★ 퀴즈 팝업 ★
-        ══════════════════════════════════════════════ */
+        /* 퀴즈 */
         const QuizPopup = ({ speakerOn, onComplete }) => {
             const qs = [
                 { q: "복도에서는 조용히 걸어 다녀야 합니다.", a: "O" },
@@ -686,29 +597,31 @@
                 setRes(ok ? 'ok' : 'no');
                 if (ok) {
                     sfx.correct();
+                    if (speakerOn) setTimeout(() => speak('정답이에요! 참 잘했어요!'), 350);
                     setShowSticker(true);
-                    setTimeout(() => onComplete(), 1900);
+                    setTimeout(() => onComplete(), 2200);
                 } else {
                     sfx.wrong();
-                    setTimeout(() => setRes(null), 1500);
+                    if (speakerOn) setTimeout(() => speak('아쉬워요. 다시 한번 생각해 볼까요?'), 350);
+                    setTimeout(() => setRes(null), 1800);
                 }
             };
 
             return (
                 <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-indigo-50 to-purple-50 p-4 text-center relative overflow-hidden">
                     {showSticker && <StickerBurst stickers={['🏆','⭐','🎉','💯','🌟','👏']} />}
-                    <div className="pop bg-white rounded-3xl shadow-xl border-4 border-indigo-200 p-6 w-full max-w-md flex flex-col items-center gap-4">
-                        <div className="text-5xl wiggle">⭐</div>
+                    <div className="pop bg-white rounded-3xl shadow-xl border-4 border-indigo-200 p-6 w-full max-w-2xl flex flex-col items-center gap-5">
+                        <div className="text-6xl wiggle">⭐</div>
                         <h2 className="fs-2xl jua text-indigo-900">오늘의 미니 퀴즈!</h2>
-                        <div className="fs-lg jua text-slate-700 leading-relaxed break-keep bg-indigo-50 p-5 rounded-2xl w-full border-2 border-indigo-100 min-h-[5rem] flex items-center justify-center">
+                        <div className="fs-lg jua text-slate-700 leading-relaxed break-keep bg-indigo-50 p-5 rounded-2xl w-full border-2 border-indigo-100 flex items-center justify-center" style={{minHeight: '6rem'}}>
                             <HighlightedText text={quiz.q} speakerOn={speakerOn} autoPlay={true} />
                         </div>
                         {res === null ? (
                             <div className="flex gap-4 w-full">
-                                <button onClick={() => ans('O')} className="flex-1 py-7 fs-3xl jua text-indigo-700 bg-gradient-to-b from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200 border-4 border-indigo-300 rounded-3xl btn-shadow">
+                                <button onClick={() => ans('O')} className="flex-1 py-8 fs-3xl jua text-indigo-700 bg-gradient-to-b from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200 border-4 border-indigo-300 rounded-3xl btn-shadow">
                                     ⭕
                                 </button>
-                                <button onClick={() => ans('X')} className="flex-1 py-7 fs-3xl jua text-rose-500 bg-gradient-to-b from-rose-50 to-rose-100 hover:from-rose-100 hover:to-rose-200 border-4 border-rose-300 rounded-3xl btn-shadow">
+                                <button onClick={() => ans('X')} className="flex-1 py-8 fs-3xl jua text-rose-500 bg-gradient-to-b from-rose-50 to-rose-100 hover:from-rose-100 hover:to-rose-200 border-4 border-rose-300 rounded-3xl btn-shadow">
                                     ❌
                                 </button>
                             </div>
@@ -723,9 +636,7 @@
             );
         };
 
-        /* ══════════════════════════════════════════════
-           ★ 녹음 화면 ★
-        ══════════════════════════════════════════════ */
+        /* 녹음 */
         const RecordingScreen = ({ onDone, onSkip, providedStream, speakerOn }) => {
             const [state, setState] = useState('idle');
             const [audioUrl, setAudioUrl] = useState(null);
@@ -734,7 +645,7 @@
             const b64 = useRef(null);
 
             useEffect(() => {
-                if (speakerOn) speak('내가 학교에서 잘 할 다짐을 녹음해볼까요?');
+                if (speakerOn) speak('내가 학교에서 잘 할 다짐을 녹음해 볼까요?');
                 return () => stopSpeak();
             }, []);
 
@@ -776,13 +687,13 @@
 
             return (
                 <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100 p-4 text-center overflow-y-auto custom-sc">
-                    <div className="pop w-full flex flex-col items-center gap-4 max-w-md">
+                    <div className="pop w-full flex flex-col items-center gap-4 max-w-2xl">
                         <Fairy mood="happy" cls="scale-100" />
                         <h2 className="fs-2xl jua text-amber-900">🎙️ 다짐 녹음하기!</h2>
                         <div className="w-full bg-white/90 rounded-2xl p-4 flex flex-col gap-2 text-left shadow-sm border-2 border-amber-100">
                             <p className="fs-md jua text-amber-700 mb-1">💬 이런 다짐은 어떨까요?</p>
                             {examples.map((ex, i) => (
-                                <p key={i} className="fs-sm gaegu text-slate-700 leading-relaxed pl-3 border-l-4 border-amber-300">{ex}</p>
+                                <p key={i} className="fs-sm ngo text-slate-700 leading-relaxed pl-3 border-l-4 border-amber-300">{ex}</p>
                             ))}
                         </div>
                         {audioUrl && <audio src={audioUrl} controls className="w-full rounded-xl" />}
@@ -814,9 +725,7 @@
             );
         };
 
-        /* ══════════════════════════════════════════════
-           ★ 입학 전 체크리스트 팝업 ★
-        ══════════════════════════════════════════════ */
+        /* 입학 전 체크리스트 */
         const ChecklistPopup = ({ questions, studentNumber, speakerOn, onComplete }) => {
             const [idx, setIdx] = useState(0);
             const [saving, setSaving] = useState(false);
@@ -841,12 +750,12 @@
 
             return (
                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3">
-                    <div className={`bg-white w-full rounded-3xl overflow-hidden shadow-2xl pop transition-colors duration-500 max-w-sm border-4 ${cbd}`}>
+                    <div className={`bg-white w-full rounded-3xl overflow-hidden shadow-2xl pop transition-colors duration-500 max-w-lg border-4 ${cbd}`}>
                         <div className={`bg-gradient-to-b ${cb} p-5 text-center transition-all duration-500`}>
-                            <span className={`inline-block bg-white/70 ${ct} fs-xs jua px-3 py-1 rounded-full mb-3`}>
+                            <span className={`inline-block bg-white/70 ${ct} fs-sm jua px-3 py-1 rounded-full mb-3`}>
                                 📚 입학 전 체크리스트 {idx + 1}/{questions.length}
                             </span>
-                            <h2 className={`fs-xl jua ${ct} break-keep leading-relaxed transition-colors duration-500 min-h-[4rem] flex items-center justify-center`}>
+                            <h2 className={`fs-xl jua ${ct} break-keep leading-relaxed transition-colors duration-500 flex items-center justify-center`} style={{minHeight: '5rem'}}>
                                 <HighlightedText text={questions[idx].항목} speakerOn={speakerOn} autoPlay={true} />
                             </h2>
                         </div>
@@ -863,9 +772,7 @@
             );
         };
 
-        /* ══════════════════════════════════════════════
-           ★ MAIN APP ★
-        ══════════════════════════════════════════════ */
+        /* MAIN APP */
         function App() {
             const [loading, setLoading] = useState(true);
             const [appData, setAppData] = useState(null);
@@ -891,12 +798,11 @@
             const [done, setDone] = useState(false);
             const [parentSubmitted, setParentSubmitted] = useState(false);
 
-            const [speakerOn, setSpeakerOn] = useState(false);
+            const [speakerOn, setSpeakerOn] = useState(false); // 기본 OFF
             const [showDebug, setShowDebug] = useState(false);
             const [activePopup, setActivePopup] = useState(null);
-            const [bigSticker, setBigSticker] = useState(null);
+            const [bigSticker, setBigSticker] = useState(false);
 
-            // 음성 목록 로딩 (브라우저 비동기 로딩 처리)
             useEffect(() => {
                 if ('speechSynthesis' in window) {
                     const load = () => {
@@ -913,7 +819,6 @@
                 setMissions([...all].sort(() => 0.5 - Math.random()).slice(0, 3));
             };
 
-            // 데이터 로드
             useEffect(() => {
                 const load = async () => {
                     let data = null;
@@ -934,7 +839,6 @@
                 load();
             }, []);
 
-            // 스피커 토글
             const toggleSpeaker = () => {
                 sfx.click();
                 if (speakerOn) {
@@ -946,7 +850,6 @@
                 }
             };
 
-            // 마이크 권한 한 번만
             const requestMic = async () => {
                 sfx.click();
                 try {
@@ -972,7 +875,6 @@
                 if (!ok) setShowChecklist(true);
             };
 
-            // 기록 저장
             const saveRecord = async (audioString, parentData) => {
                 if (!user) return;
                 setIsSaving(true);
@@ -1012,14 +914,13 @@
                 if (appData) pickMissions(appData);
             };
 
-            // 팝업 렌더
             const renderPopup = () => {
                 if (!activePopup) return null;
                 const close = () => { sfx.click(); setActivePopup(null); stopSpeak(); };
 
                 if (activePopup === 'tips30') return (
                     <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-3 fade-up">
-                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
+                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
                             <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-indigo-100 flex justify-between items-center">
                                 <h2 className="jua fs-md text-indigo-900">🏫 초등학교 생활 꿀팁 30선</h2>
                                 <button onClick={close} className="bg-white text-slate-500 hover:text-slate-700 px-3 py-1 rounded-full shadow-sm fs-sm jua">닫기</button>
@@ -1034,7 +935,7 @@
                                         {q.답변 && (
                                             <div className="flex gap-2 items-start ml-2 mt-2 pt-2 border-t border-slate-100">
                                                 <span className="text-amber-500 jua fs-md shrink-0">A.</span>
-                                                <span className="gaegu text-slate-700 fs-sm leading-relaxed">{q.답변}</span>
+                                                <span className="ngo text-slate-700 fs-sm leading-relaxed">{q.답변}</span>
                                             </div>
                                         )}
                                     </div>
@@ -1046,7 +947,7 @@
 
                 if (activePopup === 'eduTips') return (
                     <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-3 fade-up">
-                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
+                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
                             <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-b border-blue-100 flex justify-between items-center">
                                 <h2 className="jua fs-md text-blue-900">💡 오늘의 가정 연계 교육 팁</h2>
                                 <button onClick={close} className="bg-white text-slate-500 hover:text-slate-700 px-3 py-1 rounded-full shadow-sm fs-sm jua">닫기</button>
@@ -1055,7 +956,7 @@
                                 {tips.map((t, i) => (
                                     <div key={i} className="border-l-4 border-blue-400 pl-4 py-2">
                                         <h4 className="jua text-blue-900 mb-2 fs-md">{t.제목}</h4>
-                                        <p className="gaegu fs-md text-slate-700 leading-relaxed bg-blue-50 p-3 rounded-xl">{t.내용}</p>
+                                        <p className="ngo fs-md text-slate-700 leading-relaxed bg-blue-50 p-3 rounded-xl">{t.내용}</p>
                                     </div>
                                 ))}
                             </div>
@@ -1065,11 +966,11 @@
 
                 if (activePopup === 'site') return (
                     <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-3 fade-up">
-                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-xs flex flex-col overflow-hidden text-center pop">
+                        <div className="bg-white rounded-3xl shadow-xl w-full max-w-sm flex flex-col overflow-hidden text-center pop">
                             <div className="p-5 bg-gradient-to-b from-emerald-50 to-green-100 flex flex-col items-center gap-2">
                                 <span className="text-5xl mb-1 bob">🌱</span>
                                 <h2 className="jua fs-lg text-emerald-900">유초이음 사이트</h2>
-                                <p className="gaegu text-emerald-700 fs-sm">입학을 앞둔 우리 아이들을 위한<br/>다양한 정보가 가득해요!</p>
+                                <p className="ngo text-emerald-700 fs-sm">입학을 앞둔 우리 아이들을 위한<br/>다양한 정보가 가득해요!</p>
                             </div>
                             <div className="p-5 flex flex-col gap-2">
                                 <a href="https://www.parents.go.kr/usr/wap/list.do?app=10210&listType=thumb&ctgryCodeSearch=1&nttSjSearchOr=&searchField=&searchText=" target="_blank" rel="noopener noreferrer" onClick={() => sfx.click()}
@@ -1086,57 +987,47 @@
                 return null;
             };
 
-            // 🚀 화면 분기
+            if (loading) return <div className="app-frame"><Spinner text="데이터 불러오는 중..." /></div>;
+            if (isSaving) return <div className="app-frame"><Spinner text="기록 저장 중..." /></div>;
 
-            if (loading) return (
-                <div className="app-frame">
-                    <Spinner text="데이터 불러오는 중..." />
-                </div>
-            );
-            if (isSaving) return (
-                <div className="app-frame">
-                    <Spinner text="기록 저장 중..." />
-                </div>
-            );
-
-            // 🎤 마이크 권한 화면 (앱 시작 시 1회만)
+            // 마이크
             if (!micChecked) return (
                 <div className="app-frame">
                     <div className="h-full w-full flex flex-col items-center justify-center p-5 text-center bg-gradient-to-b from-blue-50 to-blue-100 overflow-y-auto custom-sc">
                         <Fairy mood="happy" cls="mb-3 scale-110" />
-                        <h1 className="fs-2xl jua text-blue-900 mb-2">🎤 마이크 준비하기</h1>
-                        <p className="fs-md gaegu text-blue-700 mb-5 leading-relaxed px-4">
+                        <h1 className="fs-2xl jua text-blue-900 mb-3">🎤 마이크 준비하기</h1>
+                        <p className="fs-md ngo text-blue-700 mb-6 leading-relaxed px-4 max-w-md">
                             내 목소리로 다짐을 남기기 위해<br />마이크가 필요해요!
                         </p>
-                        <div className="w-full max-w-sm flex flex-col gap-3">
-                            <button onClick={requestMic} className="w-full py-4 fs-lg bg-blue-500 text-white rounded-2xl jua btn-shadow flex items-center justify-center gap-2">
+                        <div className="w-full max-w-md flex flex-col gap-3">
+                            <button onClick={requestMic} className="w-full py-5 fs-lg bg-blue-500 hover:bg-blue-600 text-white rounded-2xl jua btn-shadow flex items-center justify-center gap-2">
                                 🎤 허용하고 시작하기
                             </button>
-                            <button onClick={skipMic} className="w-full py-3 fs-md bg-white text-slate-500 rounded-2xl jua border-2 border-slate-200">
+                            <button onClick={skipMic} className="w-full py-4 fs-md bg-white text-slate-500 rounded-2xl ngo border-2 border-slate-200">
                                 마이크 없이 계속하기
                             </button>
                         </div>
-                        <p className="fs-xs text-slate-400 mt-4 break-keep px-4">마이크 없어도 체크리스트·퀴즈는 이용할 수 있어요!</p>
+                        <p className="fs-sm text-slate-500 mt-4 break-keep px-4 ngo">마이크 없어도 체크리스트·퀴즈는 이용할 수 있어요!</p>
                     </div>
                 </div>
             );
 
-            // 👤 사용자 선택 화면
+            // 사용자 선택
             if (!user) return (
                 <div className="app-frame">
                     <div className="h-full w-full flex flex-col items-center justify-center p-5 bg-gradient-to-b from-amber-50 via-pink-50 to-amber-100 overflow-y-auto custom-sc">
                         <Fairy mood="happy" cls="mb-3 scale-110" />
-                        <h1 className="fs-2xl jua text-amber-800 mb-1 text-center">유초이음 성장 기록장</h1>
-                        <p className="gaegu text-amber-600 fs-md mb-5">🌟 오늘도 한 뼘 자라는 우리 🌟</p>
+                        <h1 className="fs-2xl jua text-amber-800 mb-2 text-center">유초이음 성장 기록장</h1>
+                        <p className="ngo text-amber-600 fs-md mb-6">🌟 오늘도 한 뼘 자라는 우리 🌟</p>
                         {!GAS_URL && (
                             <div className="mb-4 bg-orange-50 border-2 border-orange-200 rounded-2xl px-4 py-2 fs-sm text-orange-700 jua text-center max-w-sm">
                                 ⚠️ 샘플 모드
                             </div>
                         )}
-                        <div className="w-full max-w-sm bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-xl border-4 border-amber-200">
-                            <p className="text-center fs-md text-slate-600 jua mb-3">👋 누가 접속했나요?</p>
+                        <div className="w-full max-w-md bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-xl border-4 border-amber-200">
+                            <p className="text-center fs-md text-slate-600 jua mb-4">👋 누가 접속했나요?</p>
                             <select
-                                className="w-full p-4 rounded-2xl border-3 border-amber-300 bg-amber-50 jua text-slate-700 fs-lg outline-none focus:border-amber-500 transition-colors cursor-pointer"
+                                className="w-full p-4 rounded-2xl border-amber-300 bg-amber-50 jua text-slate-700 fs-lg outline-none focus:border-amber-500 transition-colors cursor-pointer"
                                 style={{borderWidth: '3px'}}
                                 defaultValue=""
                                 onChange={e => {
@@ -1148,12 +1039,11 @@
                                     <option key={s.학번} value={s.학번}>{s.학번} · {s.이름}</option>
                                 ))}
                             </select>
-                            <p className="text-center text-slate-400 fs-xs mt-3 gaegu">학번을 눌러 친구를 찾아보세요</p>
+                            <p className="text-center text-slate-400 fs-sm mt-3 ngo">학번을 눌러 친구를 찾아보세요</p>
                         </div>
 
-                        {/* 디버그 버튼 */}
                         <button onClick={() => { sfx.click(); setShowDebug(true); }}
-                            className="mt-4 fs-xs text-slate-400 underline opacity-60">
+                            className="mt-4 fs-sm text-slate-400 underline opacity-60 ngo">
                             🛠 연결 진단
                         </button>
                     </div>
@@ -1171,40 +1061,28 @@
                 </div>
             );
 
-            if (showMission) return (
-                <div className="app-frame">
-                    <MissionPopup missions={missions} speakerOn={speakerOn} onComplete={r => { setMissionsResult(r); setShowMission(false); setShowQuiz(true); }} />
-                </div>
-            );
-            if (showQuiz) return (
-                <div className="app-frame">
-                    <QuizPopup speakerOn={speakerOn} onComplete={() => { setShowQuiz(false); setQuizDone(true); setShowRec(true); }} />
-                </div>
-            );
-            if (showRec) return (
-                <div className="app-frame">
-                    <RecordingScreen providedStream={micStream} speakerOn={speakerOn} onDone={() => { setShowRec(false); setStudentSaved(true); }} onSkip={() => { setShowRec(false); setStudentSaved(true); }} />
-                </div>
-            );
+            if (showMission) return <div className="app-frame"><MissionPopup missions={missions} speakerOn={speakerOn} onComplete={r => { setMissionsResult(r); setShowMission(false); setShowQuiz(true); }} /></div>;
+            if (showQuiz) return <div className="app-frame"><QuizPopup speakerOn={speakerOn} onComplete={() => { setShowQuiz(false); setQuizDone(true); setShowRec(true); }} /></div>;
+            if (showRec) return <div className="app-frame"><RecordingScreen providedStream={micStream} speakerOn={speakerOn} onDone={() => { setShowRec(false); setStudentSaved(true); }} onSkip={() => { setShowRec(false); setStudentSaved(true); }} /></div>;
 
             if (done) return (
                 <div className="app-frame">
                     <div className="h-full w-full flex flex-col items-center justify-center p-5 text-center bg-gradient-to-b from-green-50 via-yellow-50 to-green-100 overflow-y-auto custom-sc relative">
                         <StickerBurst stickers={['🏆','⭐','🌟','💖','🎉','🌈','✨','👏']} />
                         <Fairy mood="happy" cls="mb-2 scale-125" />
-                        <div className="text-6xl mb-2 bob">🏅</div>
+                        <div className="text-7xl mb-2 bob">🏅</div>
                         <h1 className="fs-2xl jua rainbow-text mb-3">오늘의 기록 완성!</h1>
-                        <div className="bg-white/90 p-5 rounded-3xl shadow-md mb-4 w-full max-w-sm border-4 border-green-200">
+                        <div className="bg-white/90 p-5 rounded-3xl shadow-md mb-4 w-full max-w-lg border-4 border-green-200">
                             <p className="jua text-green-700 fs-lg mb-3">
                                 <span className="text-green-500 fs-2xl jua">{user.이름}</span> 어린이, 참 잘했어요! 👍<br />
-                                <span className="fs-md gaegu text-green-600 block mt-1">멋진 초등학생이 될 준비가 되었네요. 🌱</span>
+                                <span className="fs-md ngo text-green-600 block mt-1">멋진 초등학생이 될 준비가 되었네요. 🌱</span>
                             </p>
                             {missionsResult && (
                                 <div className="space-y-2">
                                     {missions.map((m, i) => (
                                         <div key={i} className="flex items-center justify-between bg-green-50 rounded-xl px-3 py-2">
-                                            <span className="fs-sm gaegu text-slate-700 text-left">{m.항목}</span>
-                                            <span className="text-2xl">{missionsResult[i] === 'good' ? '😃' : '☹️'}</span>
+                                            <span className="fs-sm ngo text-slate-700 text-left">{m.항목}</span>
+                                            <span className="text-3xl">{missionsResult[i] === 'good' ? '😃' : '☹️'}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -1217,7 +1095,6 @@
                 </div>
             );
 
-            // 🏠 메인 인터페이스
             const studentDone = missionsResult !== null && quizDone && studentSaved;
 
             return (
@@ -1233,8 +1110,8 @@
                             <h1 className="fs-md jua text-amber-800 -ml-1">유초이음</h1>
                         </div>
                         <div className="flex items-center gap-2">
-                            {/* 스피커 토글 */}
-                            <button onClick={toggleSpeaker} className={"w-10 h-10 rounded-full jua text-lg transition-all flex items-center justify-center " + (speakerOn ? 'bg-blue-100 text-blue-600 speaker-on-glow' : 'bg-slate-100 text-slate-400')}>
+                            <button onClick={toggleSpeaker} className={"w-11 h-11 rounded-full jua text-xl transition-all flex items-center justify-center " + (speakerOn ? 'bg-blue-100 text-blue-600 speaker-on-glow' : 'bg-slate-100 text-slate-400')}
+                                title={speakerOn ? '스피커 끄기' : '스피커 켜기'}>
                                 {speakerOn ? '🔊' : '🔇'}
                             </button>
                             <div className="fs-sm jua bg-amber-100 text-amber-800 px-3 py-1 rounded-full whitespace-nowrap">
@@ -1256,23 +1133,23 @@
 
                     <div className="flex-1 overflow-y-auto custom-sc p-3">
                         {tab === 'student' && (
-                            <div className="fade-up flex flex-col gap-3">
+                            <div className="fade-up flex flex-col gap-3 max-w-2xl mx-auto w-full">
                                 <div className="bg-white p-5 rounded-3xl shadow-sm border-4 border-amber-100 text-center">
-                                    <div className="text-4xl mb-1 wiggle inline-block">🌟</div>
+                                    <div className="text-5xl mb-2 wiggle inline-block">🌟</div>
                                     <h2 className="jua fs-xl text-slate-800 mb-1">오늘의 성장 미션</h2>
-                                    <p className="fs-sm gaegu text-slate-500 mb-4">아이와 함께 미션을 수행해 보세요!</p>
+                                    <p className="fs-sm ngo text-slate-500 mb-4">아이와 함께 미션을 수행해 보세요!</p>
                                     <div className="grid grid-cols-3 gap-2 mb-4">
                                         <div className={"p-3 rounded-2xl border-2 transition-all " + (missionsResult ? 'bg-green-50 border-green-300 scale-105' : 'bg-slate-50 border-slate-100')}>
-                                            <div className="text-3xl mb-1">📋</div>
-                                            <div className={"fs-xs jua " + (missionsResult ? 'text-green-700' : 'text-slate-400')}>{missionsResult ? '✓ 미션' : '미션'}</div>
+                                            <div className="text-4xl mb-1">📋</div>
+                                            <div className={"fs-sm jua " + (missionsResult ? 'text-green-700' : 'text-slate-400')}>{missionsResult ? '✓ 미션' : '미션'}</div>
                                         </div>
                                         <div className={"p-3 rounded-2xl border-2 transition-all " + (quizDone ? 'bg-green-50 border-green-300 scale-105' : 'bg-slate-50 border-slate-100')}>
-                                            <div className="text-3xl mb-1">💡</div>
-                                            <div className={"fs-xs jua " + (quizDone ? 'text-green-700' : 'text-slate-400')}>{quizDone ? '✓ 퀴즈' : '퀴즈'}</div>
+                                            <div className="text-4xl mb-1">💡</div>
+                                            <div className={"fs-sm jua " + (quizDone ? 'text-green-700' : 'text-slate-400')}>{quizDone ? '✓ 퀴즈' : '퀴즈'}</div>
                                         </div>
                                         <div className={"p-3 rounded-2xl border-2 transition-all " + (studentSaved ? 'bg-green-50 border-green-300 scale-105' : 'bg-slate-50 border-slate-100')}>
-                                            <div className="text-3xl mb-1">🎤</div>
-                                            <div className={"fs-xs jua " + (studentSaved ? 'text-green-700' : 'text-slate-400')}>{studentSaved ? '✓ 다짐' : '다짐'}</div>
+                                            <div className="text-4xl mb-1">🎤</div>
+                                            <div className={"fs-sm jua " + (studentSaved ? 'text-green-700' : 'text-slate-400')}>{studentSaved ? '✓ 다짐' : '다짐'}</div>
                                         </div>
                                     </div>
                                     {!studentDone && (
@@ -1287,19 +1164,18 @@
                                     )}
                                 </div>
 
-                                {/* 안내 카드 */}
                                 <div className="bg-white p-4 rounded-2xl border-2 border-blue-100 flex items-center gap-3">
-                                    <div className="text-3xl">💡</div>
+                                    <div className="text-4xl">💡</div>
                                     <div className="text-left flex-1">
-                                        <p className="jua fs-sm text-blue-800">스피커를 켜면 문제를 읽어줘요!</p>
-                                        <p className="gaegu fs-xs text-blue-600">우측 상단 🔊 버튼을 눌러보세요</p>
+                                        <p className="jua fs-md text-blue-800">스피커를 켜면 문제를 읽어줘요!</p>
+                                        <p className="ngo fs-sm text-blue-600">우측 상단 🔇 버튼을 눌러보세요</p>
                                     </div>
                                 </div>
                             </div>
                         )}
 
                         {tab === 'parent' && (
-                            <div className="fade-up flex flex-col gap-3">
+                            <div className="fade-up flex flex-col gap-3 max-w-2xl mx-auto w-full">
                                 <div className="bg-white rounded-2xl shadow-sm border-t-4 border-blue-400 p-4 flex flex-col gap-3">
                                     <h2 className="jua text-blue-900 fs-md leading-snug">
                                         👨‍👩‍👧 아이가 학교생활에 잘 적응하도록 돕고 계신가요?
@@ -1315,7 +1191,7 @@
                                         </button>
                                     </div>
                                     <textarea value={parentNote} onChange={e => setParentNote(e.target.value)}
-                                        className="p-3 fs-sm gaegu rounded-xl border-2 border-slate-100 bg-slate-50 outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none min-h-[5rem]"
+                                        className="p-3 fs-sm ngo rounded-xl border-2 border-slate-100 bg-slate-50 outline-none focus:border-blue-400 text-slate-700 transition-colors resize-none min-h-[5rem]"
                                         rows="3"
                                         placeholder="가정에서 느낀 점을 자유롭게 적어주세요." />
 
@@ -1330,8 +1206,8 @@
                                                 ✅ 소감 제출 완료!
                                             </div>
                                             <div className="flex gap-2">
-                                                <button onClick={() => { sfx.click(); setParentSubmitted(false); }} className="flex-1 py-3 bg-slate-100 text-slate-600 jua rounded-xl btn-shadow fs-xs">✏️ 수정하기</button>
-                                                <button onClick={() => { sfx.click(); setDone(true); }} className="flex-1 py-3 bg-amber-500 text-white jua rounded-xl btn-shadow fs-xs">🏆 칭찬창</button>
+                                                <button onClick={() => { sfx.click(); setParentSubmitted(false); }} className="flex-1 py-3 bg-slate-100 text-slate-600 jua rounded-xl btn-shadow fs-sm">✏️ 수정하기</button>
+                                                <button onClick={() => { sfx.click(); setDone(true); }} className="flex-1 py-3 bg-amber-500 text-white jua rounded-xl btn-shadow fs-sm">🏆 칭찬창</button>
                                             </div>
                                         </div>
                                     )}
@@ -1341,17 +1217,17 @@
                                     <p className="text-center text-slate-500 jua fs-sm">🔍 참고 자료 보기</p>
                                     <button onClick={() => { sfx.click(); setActivePopup('tips30'); }}
                                         className="w-full bg-indigo-50 hover:bg-indigo-100 active:scale-95 border-2 border-indigo-200 rounded-2xl flex items-center justify-between px-4 py-3 transition-all">
-                                        <span className="jua text-indigo-900 fs-sm">🏫 초등학교 생활 꿀팁 30선</span>
+                                        <span className="jua text-indigo-900 fs-md">🏫 초등학교 생활 꿀팁 30선</span>
                                         <span className="bg-indigo-500 text-white px-3 py-1 rounded-full jua fs-xs">열기</span>
                                     </button>
                                     <button onClick={() => { sfx.click(); setActivePopup('eduTips'); }}
                                         className="w-full bg-blue-50 hover:bg-blue-100 active:scale-95 border-2 border-blue-200 rounded-2xl flex items-center justify-between px-4 py-3 transition-all">
-                                        <span className="jua text-blue-900 fs-sm">💡 가정 연계 교육 팁</span>
+                                        <span className="jua text-blue-900 fs-md">💡 가정 연계 교육 팁</span>
                                         <span className="bg-blue-500 text-white px-3 py-1 rounded-full jua fs-xs">열기</span>
                                     </button>
                                     <button onClick={() => { sfx.click(); setActivePopup('site'); }}
                                         className="w-full bg-emerald-50 hover:bg-emerald-100 active:scale-95 border-2 border-emerald-200 rounded-2xl flex items-center justify-between px-4 py-3 transition-all">
-                                        <span className="jua text-emerald-900 fs-sm">🌱 유초이음 활용 사이트</span>
+                                        <span className="jua text-emerald-900 fs-md">🌱 유초이음 활용 사이트</span>
                                         <span className="bg-emerald-500 text-white px-3 py-1 rounded-full jua fs-xs">열기</span>
                                     </button>
                                 </div>
