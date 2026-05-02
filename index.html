@@ -947,8 +947,10 @@
             const [showQuiz, setShowQuiz] = useState(false);
             const [showRec, setShowRec] = useState(false);
             const [studentSaved, setStudentSaved] = useState(false);
-            const [textPledge, setTextPledge] = useState(''); // 텍스트로 작성한 다짐
-            const [audioPledge, setAudioPledge] = useState(null); // 녹음 base64
+            const [textPledge, setTextPledge] = useState('');
+            const [audioPledge, setAudioPledge] = useState(null);
+            const [recordId, setRecordId] = useState(null); // 학생 저장 후 받은 레코드 ID
+            const [studentSaveResult, setStudentSaveResult] = useState(null); // 'success' | 'partial' | 'fail'
 
             const [parentSup, setParentSup] = useState('');
             const [parentNote, setParentNote] = useState('');
@@ -1041,62 +1043,52 @@
                 if (!ok) setShowChecklist(true);
             };
 
-            const saveRecord = async (parentData) => {
+            // 🎤 학생 다짐 완료 시 즉시 저장 (부모 안 기다림)
+            const saveStudentNow = async (audioB64, txt, missionRes) => {
                 if (!user) return;
-                setIsSaving(true);
-                dbg('SAVE', '🚀 저장 시작', { hasAudio: !!audioPledge, hasText: !!textPledge, audioSize: audioPledge ? audioPledge.length : 0 });
+                dbg('SAVE', '🚀 학생 즉시 저장 시작', { hasAudio: !!audioB64, hasText: !!txt });
 
-                const missionResult = missionsResult
-                    ? missions.map((m, i) => `${m.항목}: ${missionsResult[i] === 'good' ? '😃 잘했어요' : '☹️ 아쉬워요'}`).join('\n')
+                const missionResult = missionRes
+                    ? missions.map((m, i) => `${m.항목}: ${missionRes[i] === 'good' ? '😃 잘했어요' : '☹️ 아쉬워요'}`).join('\n')
                     : '';
                 let audioUrl = '';
+                let saveStatus = 'success';
 
                 if (GAS_URL) {
-                    // 1단계: 오디오 업로드
-                    if (audioPledge) {
-                        dbg('SAVE', '🎤 오디오 업로드 시작', { sizeKB: Math.round(audioPledge.length / 1024) });
-                        const ar = await api.post({ action: 'uploadAudioToDrive', base64Data: audioPledge, filename: `${user.학번}_${user.이름}_${Date.now()}.webm` });
+                    if (audioB64) {
+                        dbg('SAVE', '🎤 오디오 업로드 시작', { sizeKB: Math.round(audioB64.length / 1024) });
+                        const ar = await api.post({ action: 'uploadAudioToDrive', base64Data: audioB64, filename: `${user.학번}_${user.이름}_${Date.now()}.webm` });
                         if (ar && ar.success) {
-                            dbg('SAVE', '✅ 오디오 업로드 성공', ar.fileUrl);
                             audioUrl = ar.fileUrl;
+                            dbg('SAVE', '✅ 오디오 업로드 성공', audioUrl);
                         } else {
                             dbg('ERR', '❌ 오디오 업로드 실패', ar);
-                            alert('⚠️ 녹음 파일 업로드에 실패했어요.\n\n다른 기록은 저장합니다.\n(🛠 디버그 패널에서 자세한 오류 확인)');
+                            saveStatus = 'partial'; // 텍스트는 저장되지만 오디오 실패
                         }
                     }
 
-                    // 2단계: 시트에 구조화된 기록 저장
                     const record = {
                         studentNumber: user.학번,
                         studentName: user.이름,
-                        type: '누가기록 통합',
-                        missionResult: missionResult,
-                        pledgeText: textPledge || '',
-                        audioUrl: audioUrl,
-                        parentStatus: (parentData && parentData.sup) || '',
-                        parentNote: (parentData && parentData.note) || '',
+                        missionResult,
+                        pledgeText: txt || '',
+                        audioUrl,
                     };
-                    dbg('SAVE', '📝 시트 저장 시작', record);
-                    const sr = await api.post({ action: 'saveCumulativeRecord', record });
+                    const sr = await api.post({ action: 'saveStudentRecord', record });
                     if (sr && sr.success) {
-                        dbg('SAVE', '✅ 시트 저장 성공', sr);
-                        sfx.complete();
+                        setRecordId(sr.recordId);
+                        dbg('SAVE', '✅ 학생 기록 저장 성공', sr);
                     } else {
-                        dbg('ERR', '❌ 시트 저장 실패', sr);
-                        alert('⚠️ 기록 저장 실패!\n\n오류: ' + (sr && sr.error ? sr.error : '알 수 없는 오류') + '\n\n🛠 디버그 패널에서 확인해주세요.');
-                        setIsSaving(false);
-                        return;
+                        dbg('ERR', '❌ 학생 기록 저장 실패', sr);
+                        saveStatus = 'fail';
                     }
                 } else {
-                    dbg('MOCK', '저장 시뮬레이션 (GAS_URL 미설정)');
-                    await new Promise(r => setTimeout(r, 600));
-                    sfx.complete();
+                    dbg('MOCK', '학생 저장 시뮬레이션');
+                    setRecordId('MOCK_' + Date.now());
                 }
 
-                setIsSaving(false);
-                setParentSubmitted(true);
-                setBigSticker(true);
-                setTimeout(() => setBigSticker(false), 1700);
+                setStudentSaveResult(saveStatus);
+                if (saveStatus !== 'fail') sfx.complete();
             };
 
             const resetAll = () => {
@@ -1229,11 +1221,11 @@
                                     if (f) selectUser(f);
                                 }}>
                                 <option value="" disabled>-- 학생 선택 --</option>
-                                {appData.Students.map(s => (
-                                    <option key={s.학번} value={s.학번}>{s.학번} · {s.이름}</option>
+                                {appData.Students.map((s, i) => (
+                                    <option key={s.학번} value={s.학번}>{i + 1}번 {s.이름}</option>
                                 ))}
                             </select>
-                            <p className="text-center text-slate-400 fs-sm mt-3 ngo">학번을 눌러 친구를 찾아보세요</p>
+                            <p className="text-center text-slate-400 fs-sm mt-3 ngo">번호를 눌러 친구를 찾아보세요</p>
                         </div>
 
                         <button onClick={() => { sfx.click(); setShowDebug(true); }}
@@ -1257,7 +1249,7 @@
 
             if (showMission) return <div className="app-frame"><MissionPopup missions={missions} speakerOn={speakerOn} onComplete={r => { setMissionsResult(r); setShowMission(false); setShowQuiz(true); }} /></div>;
             if (showQuiz) return <div className="app-frame"><QuizPopup speakerOn={speakerOn} onComplete={() => { setShowQuiz(false); setQuizDone(true); setShowRec(true); }} /></div>;
-            if (showRec) return <div className="app-frame"><RecordingScreen providedStream={micStream} speakerOn={speakerOn} onDone={(audioB64, txt) => { setAudioPledge(audioB64); setTextPledge(txt || ''); setShowRec(false); setStudentSaved(true); }} onSkip={() => { setShowRec(false); setStudentSaved(true); }} /></div>;
+            if (showRec) return <div className="app-frame"><RecordingScreen providedStream={micStream} speakerOn={speakerOn} onDone={(audioB64, txt) => { setAudioPledge(audioB64); setTextPledge(txt || ''); setShowRec(false); setStudentSaved(true); setIsSaving(true); saveStudentNow(audioB64, txt, missionsResult).finally(() => setIsSaving(false)); }} onSkip={() => { setShowRec(false); setStudentSaved(true); setIsSaving(true); saveStudentNow(null, null, missionsResult).finally(() => setIsSaving(false)); }} /></div>;
 
             if (done) return (
                 <div className="app-frame">
@@ -1392,9 +1384,28 @@
                                         placeholder="가정에서 느낀 점을 자유롭게 적어주세요." />
 
                                     {!parentSubmitted ? (
-                                        <button disabled={isSaving} onClick={() => saveRecord({ sup: parentSup, note: parentNote })}
+                                        <button disabled={isSaving} onClick={async () => {
+                                            setIsSaving(true);
+                                            dbg('SAVE', '👨‍👩‍👧 학부모 소감 저장 시작', { recordId, status: parentSup });
+                                            if (GAS_URL && recordId) {
+                                                const r = await api.post({ action: 'updateParentRecord', recordId, parentStatus: parentSup, parentNote });
+                                                if (r && r.success) {
+                                                    dbg('SAVE', '✅ 학부모 소감 저장 성공');
+                                                    sfx.complete();
+                                                } else {
+                                                    dbg('ERR', '❌ 학부모 소감 저장 실패', r);
+                                                    alert('⚠️ 학부모 소감 저장 실패: ' + (r && r.error ? r.error : '알 수 없는 오류'));
+                                                    setIsSaving(false);
+                                                    return;
+                                                }
+                                            }
+                                            setIsSaving(false);
+                                            setParentSubmitted(true);
+                                            setBigSticker(true);
+                                            setTimeout(() => setBigSticker(false), 1700);
+                                        }}
                                             className={"py-3 fs-md text-white rounded-xl jua btn-shadow transition-all flex items-center justify-center gap-2 " + (isSaving ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700')}>
-                                            📤 제출하기
+                                            📤 제출하기 (선택)
                                         </button>
                                     ) : (
                                         <div className="flex flex-col gap-2">
