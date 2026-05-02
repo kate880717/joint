@@ -159,7 +159,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef, useCallback } = React;
 
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyxMn0fzLjC1vD26INZETSbAdLv0uOhMlIOMDDJZxHjqaO0wM7qzrAPPfogwShrgJFgEw/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbxcgilhwhUVIC-E_rUFZj2lqMC-JUWs_VjdQWKNy-DmG-qNuzffSSDya9nsVcD6lYtcYQ/exec';
 
         /* 디버그 로그 */
         const debugLogs = [];
@@ -1211,7 +1211,7 @@
                 <div className="app-frame">
                     <div className="h-full w-full flex flex-col items-center justify-center p-5 bg-gradient-to-b from-amber-50 via-pink-50 to-amber-100 overflow-y-auto custom-sc">
                         <Fairy mood="happy" cls="mb-3 scale-110" />
-                        <h1 className="fs-2xl jua text-amber-800 mb-2 text-center">유초이음 성장 기록장</h1>
+                        <h1 className="fs-2xl jua text-amber-800 mb-2 text-center">유초이음 적응 앱</h1>
                         <p className="ngo text-amber-600 fs-md mb-6">🌟 오늘도 한 뼘 자라는 우리 🌟</p>
                         {!GAS_URL && (
                             <div className="mb-4 bg-orange-50 border-2 border-orange-200 rounded-2xl px-4 py-2 fs-sm text-orange-700 jua text-center max-w-sm">
@@ -1311,7 +1311,9 @@
                             <div className="fs-sm jua bg-amber-100 text-amber-800 px-3 py-1 rounded-full whitespace-nowrap">
                                 {user.이름}
                             </div>
-                            <button onClick={() => { sfx.click(); setShowDebug(true); }} className="w-7 h-7 rounded-full bg-slate-100 text-slate-400 text-xs">🛠</button>
+                            <button onClick={() => { sfx.click(); setShowDebug(true); }}
+                                className="w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 text-base flex items-center justify-center transition-colors"
+                                title="연결 진단 (디버그)">🛠</button>
                         </div>
                     </header>
 
